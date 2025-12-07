@@ -1,0 +1,13 @@
+path: D:/GPT/test
+
+train: images
+val: images
+
+nc: 6
+names:
+  - DISPLAY_REGION
+  - SERIAL_REGION
+  - KWH_REGION
+  - KVAH_REGION
+  - MD_KW_REGION
+  - DEMAND_KVA_REGION

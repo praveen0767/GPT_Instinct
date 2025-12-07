@@ -1,0 +1,24 @@
+# Meter Reading – Field Region Detection (Train-only)
+
+path: D:/GPT/meter-reading-3
+
+train: train/images
+val: train/images    # using same images for validation for now
+
+nc: 6
+names:
+  - DISPLAY_REGION
+  - SERIAL_REGION
+  - KWH_REGION
+  - KVAH_REGION
+  - MD_KW_REGION
+  - DEMAND_KVA_REGION
+
+
+
+roboflow:
+  workspace: xalt-analytics-dj6hb
+  project: meter-reading-rpf55
+  version: 3
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/xalt-analytics-dj6hb/meter-reading-rpf55/dataset/3

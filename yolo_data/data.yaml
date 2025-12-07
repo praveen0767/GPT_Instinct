@@ -1,0 +1,11 @@
+path: D:/GPT/yolo_data
+train: train/images
+val: val/images
+
+nc: 5
+names:
+  - DISPLAY_REGION
+  - SERIAL_REGION
+  - KWH_REGION
+  - MD_KW_REGION
+  - DECIMAL_POINT

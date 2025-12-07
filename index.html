@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MeterVision QC Portal</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    /* Dark, subtle animated background with particles */
+    .bg-animated {
+      position: fixed;
+      inset: 0;
+      z-index: -10;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56,189,248,0.10), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(16,185,129,0.10), transparent 55%),
+        radial-gradient(circle at 0% 100%, rgba(148,163,184,0.12), transparent 55%),
+        #020617;
+    }
+
+    /* Slow soft light sweep */
+    .bg-animated::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: conic-gradient(
+        from 220deg,
+        rgba(56,189,248,0.12),
+        rgba(52,211,153,0.10),
+        rgba(129,140,248,0.10),
+        transparent,
+        rgba(56,189,248,0.12)
+      );
+      mix-blend-mode: screen;
+      opacity: 0.7;
+      filter: blur(40px);
+      animation: sweep 35s linear infinite;
+    }
+
+    @keyframes sweep {
+      0%   { transform: rotate(0deg); }
+      50%  { transform: rotate(180deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Floating particles */
+    .bg-particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 9999px;
+      background: rgba(148,163,184,0.28);
+      box-shadow:
+        0 0 10px rgba(148,163,184,0.6),
+        0 0 18px rgba(56,189,248,0.45);
+      opacity: 0.6;
+      animation: floatUp 26s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translate3d(0, 40px, 0);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.7;
+      }
+      80% {
+        opacity: 0.6;
+      }
+      100% {
+        transform: translate3d(0, -120vh, 0);
+        opacity: 0;
+      }
+    }
+
+    .p1  { left: 12%; bottom: -10%; animation-duration: 30s; animation-delay: 0s;   }
+    .p2  { left: 28%; bottom: -15%; animation-duration: 34s; animation-delay: 4s;  }
+    .p3  { left: 42%; bottom: -20%; animation-duration: 28s; animation-delay: 8s;  }
+    .p4  { left: 58%; bottom: -12%; animation-duration: 32s; animation-delay: 2s;  }
+    .p5  { left: 71%; bottom: -18%; animation-duration: 29s; animation-delay: 10s; }
+    .p6  { left: 84%; bottom: -14%; animation-duration: 36s; animation-delay: 6s;  }
+    .p7  { left: 19%; bottom: -22%; animation-duration: 33s; animation-delay: 12s; }
+    .p8  { left: 36%; bottom: -16%; animation-duration: 31s; animation-delay: 15s; }
+    .p9  { left: 63%; bottom: -19%; animation-duration: 35s; animation-delay: 18s; }
+    .p10 { left: 77%; bottom: -21%; animation-duration: 30s; animation-delay: 20s; }
+
+    /* small spinner */
+    .spinner {
+      border: 3px solid rgba(255,255,255,0.08);
+      border-top: 3px solid rgba(255,255,255,0.6);
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* preview image container */
+    .preview-img {
+      max-height: 240px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    /* thumbnail hover */
+    .thumb:hover { transform: translateY(-6px); transition: transform 0.18s ease; }
+
+  </style>
+</head>
+<body class="text-slate-100 min-h-screen">
+
+  <!-- Animated background with particles -->
+  <div class="bg-animated">
+    <div class="bg-particles">
+      <span class="particle p1"></span>
+      <span class="particle p2"></span>
+      <span class="particle p3"></span>
+      <span class="particle p4"></span>
+      <span class="particle p5"></span>
+      <span class="particle p6"></span>
+      <span class="particle p7"></span>
+      <span class="particle p8"></span>
+      <span class="particle p9"></span>
+      <span class="particle p10"></span>
+    </div>
+  </div>
+
+  <!-- Top Navbar -->
+  <header class="border-b border-slate-800 bg-slate-950/85 backdrop-blur-md sticky top-0 z-40">
+    <div class="w-full px-6 py-3 flex items-center justify-between">
+      <!-- Logo + Title -->
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center font-bold text-slate-950 shadow-lg shadow-emerald-500/40">
+          MV
+        </div>
+        <div>
+          <h1 class="text-xl font-semibold tracking-tight text-slate-50">MeterVision QC</h1>
+          <p class="text-xs text-slate-200 -mt-1">Smart Meter OCR Quality Console</p>
+        </div>
+      </div>
+
+      <!-- Nav Links -->
+      <nav class="flex items-center gap-4 text-sm font-medium">
+        <button class="nav-link text-emerald-400" data-target="home-section">HOME</button>
+        <button class="nav-link text-slate-100/80 hover:text-emerald-400" data-target="dashboard-section">DASHBOARD</button>
+        <button class="nav-link text-slate-100/80 hover:text-emerald-400" data-target="workspace-section">IMAGE WORKSPACE</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="w-full px-6 py-6 space-y-6">
+    <!-- ================= HOME SECTION ================= -->
+    <section id="home-section" class="section-block">
+      <div class="grid xl:grid-cols-[2fr,1.2fr] gap-6">
+        <!-- Left Panel -->
+        <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-5 shadow-xl shadow-slate-900/70 min-h-[420px]">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="text-xl font-semibold tracking-tight text-slate-50">QC Capture Panel</h2>
+              <p class="text-xs text-slate-200 mt-1">
+                Load, upload, or capture meter images for OCR evaluation.
+              </p>
+            </div>
+            <span class="inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-200 border border-emerald-500/40">
+              • VPC Ready
+            </span>
+          </div>
+
+          <!-- MAIN ACTION BUTTONS -->
+          <div class="grid md:grid-cols-3 gap-3 mb-5">
+            <!-- Load Sample Images -->
+            <button
+              id="btn-load-sample"
+              class="group border border-slate-700 hover:border-emerald-500/80 hover:bg-emerald-500/10 rounded-xl px-3 py-3 text-sm flex flex-col gap-2 transition">
+              <div class="flex items-center gap-2">
+                <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-slate-900/80 group-hover:bg-slate-900 text-emerald-300">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"
+                       stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="4" y="5" width="14" height="12" rx="2"></rect>
+                    <circle cx="9" cy="10" r="1.3"></circle>
+                    <path d="M8 15l3-3 3 2 2-2"></path>
+                  </svg>
+                </span>
+                <span class="font-semibold text-slate-50">Load Sample Images</span>
+              </div>
+              <span class="text-xs text-slate-200">
+                Quickly test the QC workflow using demo meter photos.
+              </span>
+            </button>
+
+            <!-- Input Sample Images -->
+            <button
+              id="btn-input-sample"
+              class="group border border-slate-700 hover:border-emerald-500/80 hover:bg-emerald-500/10 rounded-xl px-3 py-3 text-sm flex flex-col gap-2 transition">
+              <div class="flex items-center gap-2">
+                <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-slate-900/80 group-hover:bg-slate-900 text-cyan-300">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"
+                       stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 7h4.5l2 2H20v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7z"></path>
+                    <path d="M12 13v5"></path>
+                    <path d="M9.5 15.5L12 13l2.5 2.5"></path>
+                  </svg>
+                </span>
+                <span class="font-semibold text-slate-50">Upload Field Images</span>
+              </div>
+              <span class="text-xs text-slate-200">
+                Ingest real smart-meter photos captured by field teams.
+              </span>
+            </button>
+
+            <!-- Live Camera -->
+            <button
+              id="btn-live-camera"
+              class="group border border-emerald-500/80 bg-emerald-500/15 hover:bg-emerald-500/25 rounded-xl px-3 py-3 text-sm flex flex-col gap-2 transition shadow shadow-emerald-500/30">
+              <div class="flex items-center gap-2">
+                <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-emerald-500/15 group-hover:bg-emerald-500/25 text-emerald-50">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"
+                       stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 7h3l1.2-2.2A1 1 0 0 1 10.1 4h3.8a1 1 0 0 1 .9.5L16 7h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"></path>
+                    <circle cx="12" cy="12.5" r="3.2"></circle>
+                  </svg>
+                </span>
+                <span class="font-semibold text-emerald-50">Take Live Camera</span>
+              </div>
+              <span class="text-xs text-emerald-50/90">
+                Capture the meter display directly from a connected device.
+              </span>
+            </button>
+          </div>
+
+          <!-- Preview + Summary -->
+          <div class="grid md:grid-cols-[2fr,1.4fr] gap-4">
+            <div class="border border-dashed border-slate-700 rounded-xl h-48 flex flex-col items-center justify-center text-sm text-slate-200 bg-slate-950/70">
+              <div id="preview-wrapper" class="flex flex-col items-center gap-3">
+                <img id="preview-img" class="preview-img hidden" src="" alt="Preview image"/>
+                <div id="preview-placeholder" class="text-xs text-slate-400 px-4 text-center">
+                  Selected or captured image will appear here for QC and OCR overlay.
+                </div>
+                <div id="preview-loading" class="hidden items-center gap-2">
+                  <div class="spinner"></div>
+                  <div class="text-xs text-slate-300">Processing image...</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="border border-slate-800 rounded-xl p-3 text-xs space-y-2 bg-slate-950/90">
+              <div class="flex items-center justify-between">
+                <span class="font-semibold text-slate-50 text-[13px]">Processing Summary</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-100">Preview Only</span>
+              </div>
+              <div class="space-y-1 text-slate-200">
+                <p>• Dewarping & contrast enhancement</p>
+                <p>• Region detection for 5 key fields</p>
+                <p>• OCR confidence scoring & quality flags</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Smart QC strip -->
+          <div class="mt-4 bg-slate-950/90 border border-slate-800 rounded-xl p-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-xs">
+            <div>
+              <p class="text-slate-50 font-semibold text-[13px]">Smart QC Mode</p>
+              <p class="text-slate-200 mt-1">
+                Auto-flag low confidence images and push them to manual review queue.
+              </p>
+            </div>
+            <div class="flex items-center gap-3">
+              <button id="btn-batch-sim" class="px-3 py-1.5 rounded-full bg-emerald-500/90 text-slate-950 text-xs font-semibold hover:bg-emerald-400">
+                Run Batch Simulation
+              </button>
+              <label class="inline-flex items-center gap-1 text-slate-100 text-[11px] cursor-pointer">
+                <input id="auto-escalate" type="checkbox" class="accent-emerald-500">
+                <span>Enable auto-escalation</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Panel: 5 Boxes -->
+        <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-4 shadow-xl shadow-slate-900/70 min-h-[420px]">
+          <h3 class="text-sm font-semibold mb-3 tracking-tight text-slate-50">
+            Extracted Meter Fields
+          </h3>
+          <p class="text-xs text-slate-200 mb-3">
+            These 5 boxes will show the values returned from the backend (Serial, kWh, kVAh, MD kW, Demand kVA).
+          </p>
+
+          <div class="space-y-2">
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-2.5">
+              <div class="flex justify-between items-center text-[11px] text-slate-200 mb-1">
+                <span>Meter Serial</span>
+                <span id="serial-conf" class="text-emerald-200">Confidence: -</span>
+              </div>
+              <div id="serial-value" class="text-sm font-mono text-slate-50 tracking-wide">----</div>
+            </div>
+
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-2.5">
+              <div class="flex justify-between items-center text-[11px] text-slate-200 mb-1">
+                <span>kWh Reading</span>
+                <span id="kwh-conf" class="text-emerald-200">Confidence: -</span>
+              </div>
+              <div id="kwh-value" class="text-sm font-mono text-slate-50 tracking-wide">----</div>
+            </div>
+
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-2.5">
+              <div class="flex justify-between items-center text-[11px] text-slate-200 mb-1">
+                <span>kVAh Reading</span>
+                <span id="kvah-conf" class="text-emerald-200">Confidence: -</span>
+              </div>
+              <div id="kvah-value" class="text-sm font-mono text-slate-50 tracking-wide">----</div>
+            </div>
+
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-2.5">
+              <div class="flex justify-between items-center text-[11px] text-slate-200 mb-1">
+                <span>Maximum Demand (kW)</span>
+                <span id="mdkw-conf" class="text-emerald-200">Confidence: -</span>
+              </div>
+              <div id="mdkw-value" class="text-sm font-mono text-slate-50 tracking-wide">----</div>
+            </div>
+
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-2.5">
+              <div class="flex justify-between items-center text-[11px] text-slate-200 mb-1">
+                <span>Demand (kVA)</span>
+                <span id="demandkva-conf" class="text-emerald-200">Confidence: -</span>
+              </div>
+              <div id="demandkva-value" class="text-sm font-mono text-slate-50 tracking-wide">----</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= DASHBOARD SECTION ================= -->
+    <section id="dashboard-section" class="section-block hidden">
+      <div class="mb-4 bg-gradient-to-r from-emerald-500/15 via-cyan-500/10 to-slate-900/80 border border-emerald-500/40 rounded-2xl px-4 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+        <div>
+          <p class="text-xs font-semibold text-emerald-100">Smart QC Summary</p>
+          <p class="text-[11px] text-slate-50">
+            1,248 images scanned • 93.4% pass rate • 39 flagged for manual review in this batch.
+          </p>
+        </div>
+        <div class="flex items-center gap-3 text-[11px]">
+          <span class="px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-50 border border-emerald-400/40">
+            Stable Model Performance
+          </span>
+          <span class="px-2 py-1 rounded-full bg-slate-900/80 text-slate-50 border border-slate-700">
+            Batch ID: QC-2025-09
+          </span>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-xl font-semibold tracking-tight text-slate-50">QC Dashboard</h2>
+          <p class="text-xs text-slate-200 mt-1">
+            High-level insights for batch processing performance and quality.
+          </p>
+        </div>
+      </div>
+
+      <!-- Metric Cards -->
+      <div class="grid md:grid-cols-3 gap-4 mb-4">
+        <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-4">
+          <p class="text-xs text-slate-200 mb-1">Total Images Processed</p>
+          <p class="text-2xl font-semibold text-slate-50">1,248</p>
+          <p class="text-[11px] text-emerald-200 mt-1">+18% vs last batch</p>
+        </div>
+        <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-4">
+          <p class="text-xs text-slate-200 mb-1">Pass Rate</p>
+          <p class="text-2xl font-semibold text-slate-50">93.4%</p>
+          <p class="text-[11px] text-slate-200 mt-1">Exact match including decimals</p>
+        </div>
+        <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-4">
+          <p class="text-xs text-slate-200 mb-1">Avg OCR Confidence</p>
+          <p class="text-2xl font-semibold text-slate-50">0.89</p>
+          <p class="text-[11px] text-slate-200 mt-1">Weighted across the 5 fields</p>
+        </div>
+      </div>
+
+      <!-- Charts Row 1 -->
+      <div class="grid lg:grid-cols-2 gap-4 mb-4">
+        <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-4">
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-xs font-semibold text-slate-50">Field-wise Accuracy</p>
+            <span class="text-[11px] text-slate-200">Bar Chart</span>
+          </div>
+          <canvas id="accuracyChart" class="w-full h-56"></canvas>
+        </div>
+
+        <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-4">
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-xs font-semibold text-slate-50">Image Status Distribution</p>
+            <span class="text-[11px] text-slate-200">Doughnut Chart</span>
+          </div>
+          <div class="flex items-center justify-center">
+            <canvas id="statusChart" class="max-h-56"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row 2 -->
+      <div class="grid lg:grid-cols-3 gap-4 mb-5">
+        <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-4">
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-xs font-semibold text-slate-50">Pass Rate Trend</p>
+            <span class="text-[11px] text-slate-200">Line Chart</span>
+          </div>
+          <canvas id="passRateChart" class="w-full h-40"></canvas>
+        </div>
+
+        <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-4">
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-xs font-semibold text-slate-50">Error Type Breakdown</p>
+            <span class="text-[11px] text-slate-200">Pie Chart</span>
+          </div>
+          <div class="flex items-center justify-center">
+            <canvas id="errorPieChart" class="max-h-40"></canvas>
+          </div>
+        </div>
+
+        <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-4">
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-xs font-semibold text-slate-50">Avg Confidence per Field</p>
+            <span class="text-[11px] text-slate-200">Polar Area Chart</span>
+          </div>
+          <div class="flex items-center justify-center">
+            <canvas id="confidencePolarChart" class="max-h-40"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= WORKSPACE SECTION ================= -->
+    <section id="workspace-section" class="section-block hidden">
+      <div class="flex items-center justify-between mb-3">
+        <div>
+          <h2 class="text-xl font-semibold tracking-tight text-slate-50">Image Workspace</h2>
+          <p class="text-xs text-slate-200 mt-1">
+            Browse images, inspect overlays, and quickly jump to QC issues.
+          </p>
+        </div>
+      </div>
+
+      <div class="mb-4 flex flex-wrap gap-2 text-[11px]">
+        <span class="px-2 py-1 rounded-full bg-slate-950/90 border border-slate-800 text-slate-50">
+          Current Batch: <span class="font-mono">QC-2025-09</span>
+        </span>
+        <span class="px-2 py-1 rounded-full bg-slate-950/90 border border-slate-800 text-slate-50">
+          Pending Manual Reviews: <span class="font-semibold text-amber-300">39</span>
+        </span>
+        <span class="px-2 py-1 rounded-full bg-slate-950/90 border border-slate-800 text-slate-50">
+          Filter: <span class="font-semibold text-emerald-300">All Images</span>
+        </span>
+      </div>
+
+      <div class="grid lg:grid-cols-[1.5fr,1.3fr] gap-4">
+        <!-- Thumbnails -->
+        <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-4">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-xs font-semibold text-slate-50">Batch Images</p>
+            <div class="flex items-center gap-2 text-[11px] text-slate-200">
+              <button id="filter-all" class="px-2 py-1 border border-slate-700 rounded-full hover:border-emerald-500/70 hover:text-emerald-300">
+                All
+              </button>
+              <button id="filter-low" class="px-2 py-1 border border-slate-700 rounded-full hover:border-amber-400 hover:text-amber-300">
+                Low Quality
+              </button>
+              <button id="filter-failed" class="px-2 py-1 border border-slate-700 rounded-full hover:border-rose-500/70 hover:text-rose-300">
+                Failed
+              </button>
+            </div>
+          </div>
+
+          <div id="batch-thumbnails" class="grid grid-cols-3 gap-2 text-[10px] text-slate-200">
+            <!-- dynamically filled -->
+            <div class="h-20 rounded-xl border border-slate-800 bg-slate-950/80 flex items-center justify-center">Loading...</div>
+          </div>
+        </div>
+
+        <!-- Right detail -->
+        <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <p class="text-xs font-semibold text-slate-50">Image Detail</p>
+            <span class="text-[11px] text-slate-200">Selected: <span id="selected-image-name" class="font-mono text-emerald-300">None</span></span>
+          </div>
+
+          <div id="detail-preview" class="h-40 border border-slate-800 rounded-xl bg-slate-950 flex items-center justify-center text-[11px] text-slate-200">
+            High-res preview with detection boxes (click thumbnail to load).
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <div class="bg-slate-950 border border-slate-800 rounded-lg p-2">
+              <p class="text-slate-200 mb-1">Overall Status</p>
+              <p id="detail-status" class="text-emerald-300 text-sm font-semibold">-</p>
+            </div>
+            <div class="bg-slate-950 border border-slate-800 rounded-lg p-2">
+              <p class="text-slate-200 mb-1">QC Flags</p>
+              <p id="detail-flags" class="text-slate-50 text-xs">-</p>
+            </div>
+          </div>
+
+          <div class="bg-slate-950 border border-slate-800 rounded-lg p-3 text-[11px] space-y-2">
+            <p class="text-slate-200 mb-1">Notes / Override</p>
+            <textarea id="override-notes"
+              class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-50 outline-none focus:border-emerald-500/70"
+              rows="2"
+              placeholder="QC engineer can add comments or override readings here..."></textarea>
+
+            <div class="flex items-center justify-end gap-2">
+              <button id="btn-mark-recheck" class="px-2.5 py-1 rounded-full border border-slate-700 text-slate-100 text-[11px] hover:border-rose-500/70 hover:text-rose-300">
+                Mark for Recheck
+              </button>
+              <button id="btn-save-decision" class="px-2.5 py-1 rounded-full bg-emerald-500/90 text-slate-950 text-[11px] font-semibold hover:bg-emerald-400">
+                Save Decision
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- JS -->
+  <script>
+    // ---------- Small Helper Utilities ----------
+    const api = {
+      listSamples: () => fetch('/api/list_samples').then(r => r.json()),
+      processSample: (sample) => fetch('/api/process', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({sample})
+      }).then(r => r.json()),
+      uploadFile: (file) => {
+        const fd = new FormData(); fd.append('file', file);
+        return fetch('/api/upload', { method: 'POST', body: fd }).then(r => r.json());
+      },
+      uploadBase64: (dataUrl) => fetch('/api/upload_base64', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ b64: dataUrl })
+      }).then(r => r.json())
+    };
+
+    // update UI fields with JSON response
+    function updateFields(json) {
+      document.getElementById('serial-value').innerText = json.serial && json.serial.text ? json.serial.text : '----';
+      document.getElementById('serial-conf').innerText = 'Confidence: ' + (json.serial && json.serial.conf ? (json.serial.conf.toFixed(2)) : '-');
+      document.getElementById('kwh-value').innerText = json.kWh && json.kWh.text ? json.kWh.text : '----';
+      document.getElementById('kwh-conf').innerText = 'Confidence: ' + (json.kWh && json.kWh.conf ? (json.kWh.conf.toFixed(2)) : '-');
+      document.getElementById('kvah-value').innerText = json.kVAh && json.kVAh.text ? json.kVAh.text : '----';
+      document.getElementById('kvah-conf').innerText = 'Confidence: ' + (json.kVAh && json.kVAh.conf ? (json.kVAh.conf.toFixed(2)) : '-');
+      document.getElementById('mdkw-value').innerText = json.md_kW && json.md_kW.text ? json.md_kW.text : '----';
+      document.getElementById('mdkw-conf').innerText = 'Confidence: ' + (json.md_kW && json.md_kW.conf ? (json.md_kW.conf.toFixed(2)) : '-');
+      document.getElementById('demandkva-value').innerText = json.demand_kVA && json.demand_kVA.text ? json.demand_kVA.text : '----';
+      document.getElementById('demandkva-conf').innerText = 'Confidence: ' + (json.demand_kVA && json.demand_kVA.conf ? (json.demand_kVA.conf.toFixed(2)) : '-');
+
+      // detail pane
+      if (json.pass !== undefined) {
+        document.getElementById('detail-status').innerText = json.pass ? 'PASS' : 'FAIL';
+      }
+      if (json.reasons && json.reasons.length) {
+        document.getElementById('detail-flags').innerText = json.reasons.join('; ');
+      } else {
+        document.getElementById('detail-flags').innerText = 'No major issues';
+      }
+    }
+
+    // show preview image
+    function showPreview(url) {
+      const img = document.getElementById('preview-img');
+      const ph = document.getElementById('preview-placeholder');
+      const loading = document.getElementById('preview-loading');
+      img.src = url;
+      img.classList.remove('hidden');
+      ph.classList.add('hidden');
+      loading.classList.add('hidden');
+    }
+    function showLoadingPreview() {
+      const img = document.getElementById('preview-img');
+      const ph = document.getElementById('preview-placeholder');
+      const loading = document.getElementById('preview-loading');
+      img.classList.add('hidden'); img.src = '';
+      ph.classList.add('hidden');
+      loading.classList.remove('hidden');
+    }
+
+    // ---------- Event wiring ----------
+    document.addEventListener('DOMContentLoaded', function(){
+      // Tab navigation
+      var navLinks = document.querySelectorAll('.nav-link');
+      var sections = document.querySelectorAll('.section-block');
+      navLinks.forEach(function (link) {
+        link.addEventListener('click', function () {
+          var targetId = link.getAttribute('data-target');
+          navLinks.forEach(n => n.classList.remove('text-emerald-400'));
+          link.classList.add('text-emerald-400');
+          sections.forEach(sec => sec.id === targetId ? sec.classList.remove('hidden') : sec.classList.add('hidden'));
+        });
+      });
+
+      // Load sample images -> populate thumbnails and process the first sample automatically
+      document.getElementById('btn-load-sample').addEventListener('click', async function(){
+        try {
+          const r = await api.listSamples();
+          const samples = r.samples || [];
+          const thumbs = document.getElementById('batch-thumbnails');
+          thumbs.innerHTML = '';
+          if (samples.length === 0) {
+            thumbs.innerHTML = '<div class="h-20 rounded-xl border border-slate-800 bg-slate-950/80 flex items-center justify-center">No samples</div>';
+            return;
+          }
+          // populate thumbnails
+          samples.forEach(name => {
+            const el = document.createElement('div');
+            el.className = 'thumb h-20 rounded-xl border border-slate-800 bg-slate-950/80 flex items-center justify-center overflow-hidden cursor-pointer';
+            el.style.display = 'flex';
+            el.style.alignItems = 'center';
+            el.style.justifyContent = 'center';
+            const img = document.createElement('img');
+            img.src = '/samples/' + name;
+            img.alt = name;
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '100%';
+            img.className = 'object-contain';
+            el.appendChild(img);
+            el.addEventListener('click', async () => {
+              document.getElementById('selected-image-name').innerText = name;
+              document.getElementById('detail-preview').innerHTML = '<div class="spinner"></div>';
+              // process the sample
+              const res = await api.processSample(name);
+              // update preview + fields
+              updateFields(res);
+              const url = res.image_url || ('/samples/' + name);
+              showPreview(url);
+              // show in detail preview
+              document.getElementById('detail-preview').innerHTML = '<img src="'+url+'" class="max-h-36 object-contain rounded-md"/>';
+            });
+            thumbs.appendChild(el);
+          });
+
+          // auto-click first thumbnail
+          thumbs.querySelector('.thumb')?.click();
+        } catch (e) {
+          alert('Failed to load samples: ' + e);
+        }
+      });
+
+      // Upload image via file picker
+      document.getElementById('btn-input-sample').addEventListener('click', function(){
+        const inp = document.createElement('input');
+        inp.type = 'file';
+        inp.accept = 'image/*';
+        inp.onchange = async function(){
+          const file = inp.files[0];
+          if (!file) return;
+          showLoadingPreview();
+          const resp = await api.uploadFile(file);
+          if (resp.error) {
+            alert('Upload error: ' + resp.error);
+            return;
+          }
+          updateFields(resp);
+          if (resp.image_url) showPreview(resp.image_url);
+          document.getElementById('detail-preview').innerHTML = '<img src="'+(resp.image_url||'')+'" class="max-h-36 object-contain rounded-md"/>';
+          document.getElementById('selected-image-name').innerText = 'uploaded';
+        };
+        inp.click();
+      });
+
+      // Live camera capture
+      document.getElementById('btn-live-camera').addEventListener('click', async function(){
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({video:true});
+          const v = document.createElement('video');
+          v.autoplay = true; v.srcObject = stream;
+          // wait for first frame
+          await new Promise(resolve => {
+            v.onloadedmetadata = () => {
+              // small delay so video has size
+              setTimeout(resolve, 300);
+            };
+          });
+          const c = document.createElement('canvas');
+          c.width = v.videoWidth || 1280;
+          c.height = v.videoHeight || 720;
+          const ctx = c.getContext('2d');
+          ctx.drawImage(v, 0, 0, c.width, c.height);
+          const dataUrl = c.toDataURL('image/jpeg', 0.9);
+          // stop stream
+          stream.getTracks().forEach(t => t.stop());
+          showLoadingPreview();
+          const resp = await api.uploadBase64(dataUrl);
+          if (resp.error) {
+            alert('Capture error: ' + resp.error);
+            return;
+          }
+          updateFields(resp);
+          if (resp.image_url) showPreview(resp.image_url);
+          document.getElementById('detail-preview').innerHTML = '<img src="'+(resp.image_url||'')+'" class="max-h-36 object-contain rounded-md"/>';
+          document.getElementById('selected-image-name').innerText = 'camera-capture';
+        } catch(e) {
+          alert('Camera capture failed: ' + e);
+        }
+      });
+
+      // Simple batch simulation (iterate visible samples and process)
+      document.getElementById('btn-batch-sim').addEventListener('click', async function(){
+        const ok = confirm('Run quick batch simulation on server samples?');
+        if (!ok) return;
+        const r = await api.listSamples();
+        const samples = r.samples || [];
+        if (samples.length === 0) { alert('No samples available'); return; }
+        // simple loop (could be optimized with concurrency)
+        let passCount = 0;
+        const results = [];
+        for (let i = 0; i < Math.min(samples.length, 30); i++) { // limit to first 30 for demo
+          const s = samples[i];
+          const res = await api.processSample(s);
+          results.push(res);
+          if (res.pass) passCount++;
+        }
+        alert('Batch done. Pass rate: ' + ((passCount/results.length)*100).toFixed(1) + '% (first ' + results.length + ' images)');
+      });
+
+      // Workspace initial load: fetch thumbnails silently
+      (async () => {
+        try {
+          const r = await api.listSamples();
+          if (r.samples && r.samples.length) {
+            // populate thumbnails area (but don't auto-run)
+            const thumbs = document.getElementById('batch-thumbnails');
+            thumbs.innerHTML = '';
+            r.samples.forEach(name => {
+              const el = document.createElement('div');
+              el.className = 'thumb h-20 rounded-xl border border-slate-800 bg-slate-950/80 flex items-center justify-center overflow-hidden cursor-pointer';
+              const img = document.createElement('img');
+              img.src = '/samples/' + name;
+              img.alt = name;
+              img.style.maxWidth = '100%';
+              img.style.maxHeight = '100%';
+              el.appendChild(img);
+              el.addEventListener('click', async () => {
+                document.getElementById('selected-image-name').innerText = name;
+                document.getElementById('detail-preview').innerHTML = '<div class="spinner"></div>';
+                const res = await api.processSample(name);
+                updateFields(res);
+                const url = res.image_url || ('/samples/' + name);
+                document.getElementById('detail-preview').innerHTML = '<img src="'+url+'" class="max-h-36 object-contain rounded-md"/>';
+                showPreview(url);
+              });
+              thumbs.appendChild(el);
+            });
+          } else {
+            // if none, show placeholder
+            document.getElementById('batch-thumbnails').innerHTML = '<div class="h-20 rounded-xl border border-slate-800 bg-slate-950/80 flex items-center justify-center">No samples</div>';
+          }
+        } catch(e) {
+          // ignore silently
+        }
+      })();
+
+      // Mark recheck & save decision handlers (demo-only)
+      document.getElementById('btn-mark-recheck').addEventListener('click', () => alert('Marked for recheck (demo)'));
+      document.getElementById('btn-save-decision').addEventListener('click', () => alert('Decision saved (demo)'));
+    });
+
+    // ===== Charts (same as before) =====
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.Chart) {
+        var palette = {
+          green: 'rgba(16, 185, 129, 0.8)',
+          greenSoft: 'rgba(16, 185, 129, 0.3)',
+          cyan: 'rgba(6, 182, 212, 0.8)',
+          cyanSoft: 'rgba(6, 182, 212, 0.3)',
+          amber: 'rgba(245, 158, 11, 0.8)',
+          amberSoft: 'rgba(245, 158, 11, 0.3)',
+          rose: 'rgba(244, 63, 94, 0.8)',
+          roseSoft: 'rgba(244, 63, 94, 0.3)',
+          slate: 'rgba(148, 163, 184, 0.8)'
+        };
+
+        var accuracyCtx = document.getElementById('accuracyChart');
+        if (accuracyCtx) {
+          new Chart(accuracyCtx, {
+            type: 'bar',
+            data: {
+              labels: ['Serial', 'kWh', 'kVAh', 'MD kW', 'Demand kVA'],
+              datasets: [{
+                label: 'Accuracy (%)',
+                data: [98, 96, 94, 92, 90],
+                backgroundColor: [
+                  palette.green,
+                  palette.cyan,
+                  palette.amber,
+                  palette.green,
+                  palette.cyan
+                ],
+                borderWidth: 0
+              }]
+            },
+            options: {
+              responsive: true,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: { callback: function (v) { return v + '%'; }, color: '#e5e7eb' },
+                  grid: { color: 'rgba(30,64,175,0.3)' }
+                },
+                x: { ticks: { color: '#e5e7eb' }, grid: { display: false } }
+              },
+              plugins: { legend: { labels: { font: { size: 11 }, color: '#e5e7eb' } } }
+            }
+          });
+        }
+
+        var statusCtx = document.getElementById('statusChart');
+        if (statusCtx) {
+          new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+              labels: ['Pass', 'Manual Review', 'Low Quality'],
+              datasets: [{ data: [934, 39, 72], backgroundColor: [palette.green, palette.amber, palette.rose], borderWidth: 0 }]
+            },
+            options: {
+              responsive: true,
+              plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, color: '#e5e7eb' } } },
+              cutout: '55%'
+            }
+          });
+        }
+
+        var passRateCtx = document.getElementById('passRateChart');
+        if (passRateCtx) {
+          new Chart(passRateCtx, {
+            type: 'line',
+            data: {
+              labels: ['Batch 1', 'Batch 2', 'Batch 3', 'Batch 4', 'Batch 5'],
+              datasets: [{ label: 'Pass Rate (%)', data: [88, 90, 91, 93, 94], borderColor: palette.cyan, backgroundColor: palette.cyanSoft, tension: 0.3, fill: true, borderWidth: 2, pointRadius: 2 }]
+            },
+            options: {
+              responsive: true,
+              scales: {
+                y: { beginAtZero: true, ticks: { callback: function (v) { return v + '%'; }, color: '#e5e7eb' }, grid: { color: 'rgba(30,64,175,0.3)' } },
+                x: { ticks: { color: '#e5e7eb' }, grid: { display: false } }
+              },
+              plugins: { legend: { labels: { font: { size: 11 }, color: '#e5e7eb' } } }
+            }
+          });
+        }
+
+        var errorPieCtx = document.getElementById('errorPieChart');
+        if (errorPieCtx) {
+          new Chart(errorPieCtx, {
+            type: 'pie',
+            data: {
+              labels: ['Glare', 'Blur', 'Tilt', 'Decimal Issue'],
+              datasets: [{ data: [25, 18, 15, 14], backgroundColor: [palette.amber, palette.rose, palette.cyan, palette.green], borderWidth: 0 }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, color: '#e5e7eb' } } } }
+          });
+        }
+
+        var polarCtx = document.getElementById('confidencePolarChart');
+        if (polarCtx) {
+          new Chart(polarCtx, {
+            type: 'polarArea',
+            data: {
+              labels: ['Serial', 'kWh', 'kVAh', 'MD kW', 'Demand kVA'],
+              datasets: [{
+                label: 'Avg Confidence',
+                data: [0.95, 0.92, 0.90, 0.88, 0.87],
+                backgroundColor: ['rgba(16,185,129,0.65)','rgba(6,182,212,0.65)','rgba(245,158,11,0.65)','rgba(244,63,94,0.65)','rgba(148,163,184,0.65)'],
+                borderColor: ['rgba(16,185,129,1)','rgba(6,182,212,1)','rgba(245,158,11,1)','rgba(244,63,94,1)','rgba(148,163,184,1)'],
+                borderWidth: 1.5
+              }]
+            },
+            options: {
+              responsive: true,
+              animation: { animateRotate: true, animateScale: true },
+              scales: {
+                r: { beginAtZero: true, min: 0, max: 1, ticks: { stepSize: 0.2, callback: function (v) { return v.toFixed(1); }, color: '#e5e7eb' }, grid: { color: 'rgba(30,64,175,0.25)' }, angleLines: { color: 'rgba(30,64,175,0.25)' }, pointLabels: { color: '#e5e7eb', font: { size: 10 } } }
+              },
+              plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, color: '#e5e7eb' } } }
+            }
+          });
+        }
+      }
+    });
+  </script>
+</body>
+</html>
