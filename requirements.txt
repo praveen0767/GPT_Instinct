@@ -1,0 +1,101 @@
+########################
+# Core API & Web Server
+########################
+fastapi
+uvicorn[standard]
+gunicorn
+
+########################
+# Task Queue & Scheduling
+########################
+celery
+redis            # as Celery broker / backend if needed
+kombu
+flower           # Celery monitoring (optional)
+
+########################
+# Database & ORM
+########################
+sqlalchemy
+asyncpg          # async PostgreSQL driver
+psycopg2-binary  # standard PostgreSQL driver (migrations/tools)
+alembic          # DB migrations
+
+########################
+# Time-Series & Analytics
+########################
+psycopg2-binary  # for TimescaleDB too (Postgres extension)
+pandas
+numpy
+
+########################
+# Computer Vision & ML
+########################
+torch
+torchvision
+ultralytics      # YOLOv8 (object detection for meter/display)
+opencv-python    # preprocessing, enhancement, dewarping
+easyocr          # OCR fallback
+paddleocr        # secondary OCR fallback (requires system deps)
+Pillow           # image loading & basic ops
+scikit-image
+
+########################
+# NLP / Transformer OCR (if using Transformer-based digit models)
+########################
+transformers
+timm
+
+########################
+# Storage & File Handling
+########################
+minio            # S3-compatible object storage client
+python-multipart # file uploads in FastAPI
+aiofiles         # async file handling
+
+########################
+# Caching, Rate Limiting, Sessions
+########################
+redis
+aioredis
+
+########################
+# Config, Utilities & Logging
+########################
+python-dotenv
+pydantic
+loguru
+requests
+httpx
+
+########################
+# Monitoring & Observability
+########################
+prometheus-client
+prometheus-fastapi-instrumentator
+opentelemetry-api
+opentelemetry-sdk
+
+########################
+# Security & Auth
+########################
+python-jose[cryptography]  # JWT
+passlib[bcrypt]            # password hashing
+bcrypt
+pyjwt
+plotly
+express-py
+
+########################
+# Validation & Misc
+########################
+email-validator
+typing-extensions
+
+########################
+# Testing (optional but recommended)
+########################
+pytest
+pytest-asyncio
+pytest-cov
+httpx[http2]    # test client for FastAPI
