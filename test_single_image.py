@@ -1,15 +1,26 @@
-import os
-os.environ["TORCH_COMPILE_DISABLE"] = "1"
 import sys
-from scripts.generate_debug_session import process_and_save_debug
+import json
+from pathlib import Path
+from fastapi.testclient import TestClient
 
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python test_single_image.py <image_path>")
-        sys.exit(1)
-        
-    img_path = sys.argv[1]
-    out_dir = "examples/debug_session/single_test"
-    print(f"Testing image: {img_path}")
-    process_and_save_debug(img_path, out_dir, "test_screenshot")
-    print(f"Results saved to {out_dir}")
+# Add project root to sys.path
+sys.path.insert(0, str(Path(__file__).parent.absolute()))
+
+from api.app import app
+
+client = TestClient(app)
+
+image_path = "D:\\GPT_instinct\\Screenshot 2026-03-14 014904.png"
+
+print(f"Testing inference on: {image_path}")
+with open(image_path, "rb") as f:
+    with TestClient(app) as client:
+        response = client.post("/infer", files={"file": ("image.png", f, "image/png")})
+
+print(f"Status Code: {response.status_code}")
+try:
+    print("Response JSON:")
+    print(json.dumps(response.json(), indent=2))
+except Exception as e:
+    print("Failed to decode JSON. Raw response:")
+    print(response.text)

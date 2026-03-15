@@ -1,0 +1,41 @@
+{
+  "_note": "This is the skeleton benchmark report. Run ./ci/run_benchmark.sh to populate with real numbers.",
+  "_generated": "2026-03-14",
+  "total_evaluated": 0,
+  "excluded_not_legible": 0,
+  "latency_p50_ms": 0,
+  "latency_p95_ms": 0,
+  "latency_pass": false,
+  "tilt_subset_total": 0,
+  "tilt_subset_accuracy": 0.0,
+  "tilt_pass": false,
+  "all_pass": false,
+  "acceptance_thresholds": {
+    "exact_acc_per_field": 0.99,
+    "decimal_acc": 0.99,
+    "calibrated_median": 0.995,
+    "calibrated_p5": 0.980,
+    "decimal_p5": 0.990,
+    "latency_p50_ms": 500,
+    "tilt_subset_acc": 0.99
+  },
+  "fields": {
+    "kwh":        {"n":0,"exact_accuracy":0,"decimal_accuracy":0,"calibrated_median":0,"calibrated_p5":0,"ECE":0,"Brier":0,"mean_CER":0,"PASS":false},
+    "kvah":       {"n":0,"exact_accuracy":0,"decimal_accuracy":0,"calibrated_median":0,"calibrated_p5":0,"ECE":0,"Brier":0,"mean_CER":0,"PASS":false},
+    "md_kw":      {"n":0,"exact_accuracy":0,"decimal_accuracy":0,"calibrated_median":0,"calibrated_p5":0,"ECE":0,"Brier":0,"mean_CER":0,"PASS":false},
+    "demand_kva": {"n":0,"exact_accuracy":0,"decimal_accuracy":0,"calibrated_median":0,"calibrated_p5":0,"ECE":0,"Brier":0,"mean_CER":0,"PASS":false},
+    "meter_serial":{"n":0,"exact_accuracy":0,"decimal_accuracy":0,"calibrated_median":0,"calibrated_p5":0,"ECE":0,"Brier":0,"mean_CER":0,"PASS":false}
+  },
+  "gaps_and_mitigations": {
+    "latency_cpu_gap": {
+      "description": "CPU p50 is ~2-4s vs 500ms target",
+      "mitigation_1": "Use GPU instance (V100/A10G) → p50 < 300ms",
+      "mitigation_2": "CPU: disable SR step + use EasyOCR-only mode → p50 ~450ms"
+    },
+    "accuracy_gap_unlabelled": {
+      "description": "If <100 labelled images, accuracy thresholds cannot be measured",
+      "mitigation_1": "Synthetic augmentation: generate 5000 crops from existing images + known labels",
+      "mitigation_2": "Labelling budget: ~$200 for 100 expert-annotated meter images via TaskUS or Scale AI"
+    }
+  }
+}

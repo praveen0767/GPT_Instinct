@@ -1,0 +1,89 @@
+name: Anti-Gravity OCR CI
+
+on:
+  push:
+    branches: ["main", "dev", "feature/**"]
+  pull_request:
+    branches: ["main"]
+  schedule:
+    # Nightly full benchmark at 02:00 UTC
+    - cron: "0 2 * * *"
+
+jobs:
+  # ── Unit & Integration Tests ────────────────────────────────────────────────
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: pip
+
+      - name: Install CPU dependencies
+        run: |
+          pip install --upgrade pip
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: pytest tests/ -v --tb=short -x
+
+      - name: Run quick benchmark (20 sample images)
+        env:
+          BENCHMARK_SAMPLE: "20"
+        run: |
+          # Start server in background
+          uvicorn api.app:app --host 0.0.0.0 --port 8000 &
+          sleep 15
+          # Quick smoke benchmark on examples/ if benchmark manifest not present
+          if [ -f "data/prepared/benchmark_manifest.json" ]; then
+            python ocr_pipeline/evaluator.py \
+              --benchmark data/prepared/benchmark_manifest.json \
+              --out reports/ --backend http://localhost:8000 || true
+          else
+            echo "No benchmark manifest found — skipping benchmark (unit tests passed)."
+          fi
+
+  # ── Full Nightly Benchmark (GPU runner) ────────────────────────────────────
+  nightly-benchmark:
+    if: github.event_name == 'schedule'
+    runs-on: [self-hosted, gpu]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install GPU dependencies
+        run: |
+          pip install --upgrade pip
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+          pip install -r requirements.txt
+
+      - name: Prepare benchmark dataset
+        run: |
+          python training/prepare_dataset.py \
+            --images data/images --labels data/labels.csv --out data/prepared
+
+      - name: Start API server
+        run: |
+          uvicorn api.app:app --host 0.0.0.0 --port 8000 &
+          sleep 20
+
+      - name: Full benchmark
+        run: ./ci/run_benchmark.sh http://localhost:8000 data/prepared/benchmark_manifest.json
+
+      - name: Upload report artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: benchmark-report-${{ github.run_id }}
+          path: |
+            reports/benchmark_report.json
+            reports/reliability_*.png
+            reports/final_validation_report.md

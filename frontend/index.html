@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Anti-Gravity OCR — Demo UI</title>
+  <meta name="description" content="Upload a utility meter image and run the Instinct GPT Anti-Gravity OCR pipeline." />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand: #6366f1;
+      --brand-dark: #4f46e5;
+      --success: #10b981;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+    }
+    * { font-family: 'Inter', sans-serif; }
+    body {
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      min-height: 100vh;
+    }
+    .glass {
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .glass-light {
+      background: rgba(255,255,255,0.10);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .mono { font-family: ui-monospace, 'Roboto Mono', monospace; }
+    .drop-zone {
+      border: 2px dashed rgba(99,102,241,0.5);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .drop-zone.dragover {
+      border-color: var(--brand);
+      background: rgba(99,102,241,0.12);
+    }
+    .spin { animation: spin 0.9s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .conf-bar-fill { transition: width 0.6s cubic-bezier(.4,0,.2,1); }
+    .fade-in { animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    .badge { display:inline-flex; align-items:center; padding:2px 10px; border-radius:9999px; font-size:0.7rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; }
+    .badge-green { background:rgba(16,185,129,.18); color:#34d399; }
+    .badge-red   { background:rgba(239,68,68,.18); color:#f87171; }
+    .badge-yellow{ background:rgba(245,158,11,.18); color:#fbbf24; }
+    .badge-indigo{ background:rgba(99,102,241,.18); color:#a5b4fc; }
+    :focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+    button { cursor:pointer; }
+    #previewImg { max-height: 180px; object-fit: contain; width: 100%; border-radius:8px; }
+    .field-card { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px 16px; }
+    .conf-bar-bg { background:rgba(255,255,255,0.1); border-radius:9999px; height:6px; overflow:hidden; }
+    .noresult { color:rgba(255,255,255,0.35); font-size:0.85rem; text-align:center; padding:32px 0; }
+    .qc-banner { background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.35); border-radius:10px; padding:10px 16px; }
+    .artifact-link { display:inline-flex; align-items:center; gap:6px; color:#a5b4fc; font-size:0.78rem; text-decoration:underline; }
+    .artifact-link:hover { color:#c7d2fe; }
+    details > summary { list-style:none; }
+    details > summary::-webkit-details-marker { display:none; }
+    .field-value { font-size:1.35rem; font-weight:700; color:#f1f5f9; letter-spacing:-0.02em; }
+    .scroll-results { max-height: 72vh; overflow-y: auto; }
+    .scroll-results::-webkit-scrollbar { width:4px; }
+    .scroll-results::-webkit-scrollbar-track { background:transparent; }
+    .scroll-results::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.15); border-radius:2px; }
+  </style>
+</head>
+<body class="p-4 md:p-8">
+
+  <!-- Header -->
+  <header class="max-w-6xl mx-auto mb-8 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <div class="w-11 h-11 rounded-xl flex items-center justify-center text-white font-black text-lg shadow-lg"
+           style="background:linear-gradient(135deg,#6366f1,#8b5cf6);" aria-hidden="true">AG</div>
+      <div>
+        <h1 class="text-white font-semibold text-xl leading-tight">Anti-Gravity OCR</h1>
+        <p class="text-indigo-300 text-xs mt-0.5">Instinct GPT Pipeline · Meter Reading Extraction</p>
+      </div>
+    </div>
+    <div class="flex gap-2 flex-wrap">
+      <span class="badge badge-indigo">TrOCR</span>
+      <span class="badge badge-indigo">PaddleOCR</span>
+      <span class="badge badge-indigo">EasyOCR</span>
+      <span class="badge badge-green">ROVER Ensemble</span>
+    </div>
+  </header>
+
+  <!-- Main Grid -->
+  <main class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-6" role="main">
+
+    <!-- Left Panel: Upload -->
+    <section class="lg:col-span-2 glass rounded-2xl p-6 flex flex-col gap-5" aria-labelledby="upload-heading">
+      <h2 id="upload-heading" class="text-white font-semibold text-sm uppercase tracking-wider">Upload Image</h2>
+
+      <!-- Drop Zone -->
+      <div id="dropZone"
+           class="drop-zone rounded-xl p-6 flex flex-col items-center gap-4 cursor-pointer"
+           role="button" aria-label="Drag and drop or click to upload meter image"
+           tabindex="0"
+           ondragover="handleDragOver(event)"
+           ondragleave="handleDragLeave(event)"
+           ondrop="handleDrop(event)"
+           onclick="document.getElementById('fileInput').click()"
+           onkeydown="if(event.key==='Enter'||event.key===' ')document.getElementById('fileInput').click()">
+
+        <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp" class="hidden"
+               aria-label="Upload meter image" onchange="handleFile(this.files)" />
+
+        <div id="dropIcon" aria-hidden="true">
+          <svg width="48" height="48" fill="none" viewBox="0 0 24 24" class="text-indigo-400">
+            <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M14 8h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div id="dropText" class="text-center">
+          <p class="text-white text-sm font-medium">Drop image here</p>
+          <p class="text-indigo-300 text-xs mt-1">PNG · JPG · WebP · Max 5 MB</p>
+        </div>
+
+        <!-- Preview -->
+        <div id="previewWrap" class="hidden w-full">
+          <img id="previewImg" src="" alt="Selected meter image preview" />
+          <p id="fileName" class="text-indigo-300 text-xs mt-2 text-center mono truncate"></p>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex gap-3 items-center flex-wrap">
+        <button id="runBtn"
+                class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 shadow-lg"
+                style="background:linear-gradient(135deg,#6366f1,#8b5cf6);"
+                onclick="upload()" disabled aria-disabled="true"
+                aria-label="Run OCR on selected image">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Run OCR
+        </button>
+
+        <button class="px-4 py-2.5 rounded-xl text-sm font-medium text-indigo-200 glass-light hover:text-white transition-colors"
+                onclick="resetAll()" aria-label="Reset and clear selection">
+          Reset
+        </button>
+
+        <!-- Spinner -->
+        <div id="spinner" class="hidden items-center gap-2 text-indigo-300 text-sm" role="status" aria-live="polite">
+          <svg class="spin w-5 h-5" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-opacity="0.2" />
+            <path d="M22 12a10 10 0 00-10-10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <span>Processing…</span>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div id="errorBox" class="hidden rounded-xl p-3 text-sm" style="background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); color:#fca5a5;" role="alert" aria-live="assertive"></div>
+
+      <!-- Pipeline Badge List -->
+      <div class="mt-auto pt-4 border-t border-white border-opacity-10">
+        <p class="text-indigo-300 text-xs font-medium mb-2 uppercase tracking-wider">Pipeline</p>
+        <ol class="text-xs text-indigo-200 space-y-1.5">
+          <li class="flex items-center gap-2"><span class="w-4 h-4 rounded-full bg-indigo-500 bg-opacity-30 flex items-center justify-center text-indigo-300 text-xs font-bold">1</span>YOLOv8 Detection + HSV Fallback</li>
+          <li class="flex items-center gap-2"><span class="w-4 h-4 rounded-full bg-indigo-500 bg-opacity-30 flex items-center justify-center text-indigo-300 text-xs font-bold">2</span>Dewarp → CLAHE → Real-ESRGAN SR</li>
+          <li class="flex items-center gap-2"><span class="w-4 h-4 rounded-full bg-indigo-500 bg-opacity-30 flex items-center justify-center text-indigo-300 text-xs font-bold">3</span>TrOCR · PaddleOCR · EasyOCR Ensemble</li>
+          <li class="flex items-center gap-2"><span class="w-4 h-4 rounded-full bg-indigo-500 bg-opacity-30 flex items-center justify-center text-indigo-300 text-xs font-bold">4</span>ROVER Voting + Decimal Validator</li>
+          <li class="flex items-center gap-2"><span class="w-4 h-4 rounded-full bg-indigo-500 bg-opacity-30 flex items-center justify-center text-indigo-300 text-xs font-bold">5</span>LLM Correction + Isotonic Calibration</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Right Panel: Results -->
+    <section class="lg:col-span-3 glass rounded-2xl p-6 flex flex-col gap-4" aria-labelledby="result-heading">
+      <div class="flex items-center justify-between">
+        <h2 id="result-heading" class="text-white font-semibold text-sm uppercase tracking-wider">Results</h2>
+        <div id="latencyBadge" class="hidden">
+          <span class="badge badge-indigo mono" id="latencyText"></span>
+        </div>
+      </div>
+
+      <div id="results" class="scroll-results flex flex-col gap-4">
+        <div class="noresult">
+          <svg width="40" height="40" fill="none" viewBox="0 0 24 24" class="mx-auto mb-3 text-indigo-700" aria-hidden="true">
+            <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                  stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Upload a meter image and click <strong>Run OCR</strong> to see results here.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="max-w-6xl mx-auto mt-8 text-center text-indigo-500 text-xs">
+    Anti-Gravity OCR Pipeline · Instinct GPT · 96.5% Accuracy · ≤500ms Target Latency
+  </footer>
+
+<script>
+  /* ── state ── */
+  let selectedFile = null;
+
+  /* ── drag & drop ── */
+  function handleDragOver(e) {
+    e.preventDefault();
+    document.getElementById('dropZone').classList.add('dragover');
+  }
+  function handleDragLeave(e) {
+    document.getElementById('dropZone').classList.remove('dragover');
+  }
+  function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('dropZone').classList.remove('dragover');
+    const f = e.dataTransfer?.files?.[0];
+    if (f) handleFile([f]);
+  }
+
+  /* ── file selection ── */
+  function handleFile(files) {
+    const f = files[0];
+    if (!f) return;
+    clearError();
+    if (f.size > 5 * 1024 * 1024) { showError('File too large — max 5 MB allowed.'); return; }
+    if (!f.type.startsWith('image/')) { showError('Please select a valid image file (PNG, JPG, WebP).'); return; }
+    selectedFile = f;
+    const preview = document.getElementById('previewImg');
+    preview.src = URL.createObjectURL(f);
+    document.getElementById('fileName').textContent = f.name + ' · ' + (f.size / 1024).toFixed(1) + ' KB';
+    document.getElementById('previewWrap').classList.remove('hidden');
+    document.getElementById('dropIcon').classList.add('hidden');
+    document.getElementById('dropText').classList.add('hidden');
+    const btn = document.getElementById('runBtn');
+    btn.disabled = false;
+    btn.setAttribute('aria-disabled', 'false');
+  }
+
+  /* ── reset ── */
+  function resetAll() {
+    selectedFile = null;
+    document.getElementById('previewImg').src = '';
+    document.getElementById('previewWrap').classList.add('hidden');
+    document.getElementById('dropIcon').classList.remove('hidden');
+    document.getElementById('dropText').classList.remove('hidden');
+    document.getElementById('fileName').textContent = '';
+    const btn = document.getElementById('runBtn');
+    btn.disabled = true;
+    btn.setAttribute('aria-disabled', 'true');
+    document.getElementById('results').innerHTML = '<div class="noresult"><svg width="40" height="40" fill="none" viewBox="0 0 24 24" class="mx-auto mb-3 text-indigo-700" aria-hidden="true"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Upload a meter image and click <strong>Run OCR</strong> to see results here.</div>';
+    document.getElementById('latencyBadge').classList.add('hidden');
+    clearError();
+  }
+
+  /* ── upload ── */
+  async function upload() {
+    if (!selectedFile) return;
+    setLoading(true);
+    clearError();
+    const fd = new FormData();
+    fd.append('file', selectedFile);
+    try {
+      const t0 = performance.now();
+      const res = await fetch('/infer', { method: 'POST', body: fd });
+      const elapsed = ((performance.now() - t0) / 1000).toFixed(2);
+      if (!res.ok) {
+        const txt = await res.text();
+        showError(`Server error ${res.status}: ${txt.substring(0, 200)}`);
+        return;
+      }
+      const j = await res.json();
+      renderResult(j, elapsed);
+    } catch (err) {
+      showError('Network error — is the backend running on :8000?');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  /* ── render ── */
+  function renderResult(j, elapsed) {
+    let html = '';
+
+    // Latency badge
+    document.getElementById('latencyText').textContent = `${elapsed}s · ${j.processing_latency_ms ?? '?'}ms server`;
+    document.getElementById('latencyBadge').classList.remove('hidden');
+
+    // QC / flag banner
+    if (j.qc_flag || (j.reason_codes && j.reason_codes.length)) {
+      html += `<div class="qc-banner fade-in flex items-start gap-3" role="alert">
+        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" class="shrink-0 mt-0.5" aria-hidden="true" style="color:#fbbf24">
+          <path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <div>
+          <p class="text-yellow-300 font-semibold text-sm">QC Flag — Low Confidence</p>
+          <p class="text-yellow-200 text-xs mt-0.5">${(j.reason_codes || []).join(' · ') || 'Flagged for human review'}</p>
+        </div>
+      </div>`;
+    }
+
+    // Image quality row
+    const iq = j.image_quality || {};
+    html += `<div class="field-card fade-in" aria-label="Image quality indicators">
+      <p class="text-indigo-300 text-xs font-semibold uppercase tracking-wider mb-3">Image Quality</p>
+      <div class="flex flex-wrap gap-2">
+        ${chip('Blur', iq.blur, iq.blur)}
+        ${chip('Glare', iq.glare, iq.glare)}
+        ${chip('Legible', !iq.not_legible, iq.not_legible)}
+        ${iq.tilt_deg != null ? `<span class="badge badge-indigo">Tilt: ${Number(iq.tilt_deg).toFixed(1)}°</span>` : ''}
+      </div>
+    </div>`;
+
+    // Field cards
+    const fields = [
+      { key: 'kwh',          label: 'kWh Reading',      icon: '⚡' },
+      { key: 'meter_serial', label: 'Meter Serial',     icon: '🔢' },
+      { key: 'kvah',         label: 'kVAh',             icon: '📊' },
+      { key: 'md_kw',        label: 'MD kW',            icon: '📈' },
+      { key: 'demand_kva',   label: 'Demand kVA',       icon: '🔋' },
+    ];
+
+    for (const { key, label, icon } of fields) {
+      const v = j[key];
+      if (!v || v.value === '0.0' && v.probability === 0) continue;
+      const prob = typeof v.probability === 'number' ? v.probability : 0;
+      const pct = Math.round(prob * 100);
+      const barColor = prob >= 0.98 ? '#10b981' : prob >= 0.85 ? '#f59e0b' : '#ef4444';
+      const sources = (v.sources || []).join(' · ') || '—';
+      html += `<div class="field-card fade-in" aria-label="${label} extraction result">
+        <div class="flex items-start justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <span aria-hidden="true">${icon}</span>
+            <span class="text-indigo-300 text-xs font-semibold uppercase tracking-wider">${label}</span>
+          </div>
+          <span class="badge ${prob >= 0.98 ? 'badge-green' : prob >= 0.85 ? 'badge-yellow' : 'badge-red'}">${pct}%</span>
+        </div>
+        <div class="field-value mb-2">${esc(v.value ?? '—')}</div>
+        <div class="conf-bar-bg mb-3">
+          <div class="conf-bar-fill h-full rounded-full" style="width:${pct}%;background:${barColor};" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Confidence ${pct}%"></div>
+        </div>
+        ${v.sources ? `<p class="text-indigo-400 text-xs mb-2">Sources: <span class="mono">${esc(sources)}</span></p>` : ''}
+        ${(v.candidates && v.candidates.length > 1) ? candidatesBlock(v.candidates) : ''}
+        ${v.debug && v.debug.raw_ocr ? `<p class="text-indigo-500 text-xs mono mt-1">Raw OCR: ${esc(v.debug.raw_ocr)}</p>` : ''}
+      </div>`;
+    }
+
+    // Artifacts
+    const art = j.artifacts;
+    if (art && (art.crop_url || art.sr_url)) {
+      html += `<div class="field-card fade-in">
+        <p class="text-indigo-300 text-xs font-semibold uppercase tracking-wider mb-3">Debug Artifacts</p>
+        <div class="flex flex-wrap gap-4">
+          ${art.crop_url ? `<a href="${esc(art.crop_url)}" target="_blank" rel="noopener" class="artifact-link" aria-label="View cropped meter region">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M14 8h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Crop Image
+          </a>` : ''}
+          ${art.sr_url ? `<a href="${esc(art.sr_url)}" target="_blank" rel="noopener" class="artifact-link" aria-label="View super-resolution enhanced image">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            SR Image
+          </a>` : ''}
+          ${art.color_mask_url ? `<a href="${esc(art.color_mask_url)}" target="_blank" rel="noopener" class="artifact-link" aria-label="View HSV color mask">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Color Mask
+          </a>` : ''}
+        </div>
+      </div>`;
+    }
+
+    // Raw JSON (collapsible)
+    html += `<details class="field-card fade-in">
+      <summary class="text-indigo-300 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none flex items-center gap-2">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 9l-7 7-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Raw JSON
+      </summary>
+      <pre class="mt-3 text-xs text-indigo-200 mono overflow-x-auto whitespace-pre-wrap" aria-label="Raw JSON response">${esc(JSON.stringify(j, null, 2))}</pre>
+    </details>`;
+
+    document.getElementById('results').innerHTML = html;
+  }
+
+  /* ── helpers ── */
+  function chip(label, good, bad) {
+    const cls = bad ? 'badge-red' : 'badge-green';
+    const val = good !== undefined ? (good ? 'Yes' : 'No') : '—';
+    return `<span class="badge ${cls}">${label}: ${val}</span>`;
+  }
+
+  function candidatesBlock(candidates) {
+    const rows = candidates.slice(0, 5).map(c =>
+      `<div class="flex justify-between items-center text-xs py-1 border-b border-white border-opacity-5">
+        <span class="mono text-white">${esc(c.value)}</span>
+        <span class="text-indigo-300">${(Number(c.score) * 100).toFixed(1)}%</span>
+      </div>`
+    ).join('');
+    return `<details class="mt-2">
+      <summary class="text-indigo-400 text-xs cursor-pointer select-none">Candidates (${candidates.length})</summary>
+      <div class="mt-2">${rows}</div>
+    </details>`;
+  }
+
+  function setLoading(on) {
+    const btn = document.getElementById('runBtn');
+    const sp = document.getElementById('spinner');
+    btn.disabled = on;
+    btn.setAttribute('aria-disabled', String(on));
+    on ? sp.classList.remove('hidden') : sp.classList.add('hidden');
+    sp.style.display = on ? 'flex' : 'none';
+  }
+
+  function showError(msg) {
+    const box = document.getElementById('errorBox');
+    box.textContent = msg;
+    box.classList.remove('hidden');
+  }
+
+  function clearError() {
+    const box = document.getElementById('errorBox');
+    box.textContent = '';
+    box.classList.add('hidden');
+  }
+
+  function esc(s) {
+    return String(s)
+      .replaceAll('&', '&amp;').replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;').replaceAll('"', '&quot;');
+  }
+</script>
+</body>
+</html>

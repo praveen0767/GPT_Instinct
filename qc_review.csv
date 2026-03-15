@@ -1,0 +1,28 @@
+image_id,field,raw_best,corrected,confidence,flags,reason
+Screenshot 2026-03-14 014904.png,kwh,100,100,0.483,LOW_CONFIDENCE,calibrated conf=0.48
+Screenshot 2026-03-14 014904.png,kvah,81,81,0.515,LOW_CONFIDENCE,calibrated conf=0.51
+Screenshot 2026-03-14 014904.png,md_kw,15,15,0.562,LOW_CONFIDENCE,calibrated conf=0.56
+Screenshot 2026-03-14 014904.png,demand_kva,86,86,0.671,LOW_CONFIDENCE,calibrated conf=0.67
+61617d59_Screenshot 2026-03-14 113016.png.png,kwh,11,11,0.647,LOW_CONFIDENCE,calibrated conf=0.65
+61617d59_Screenshot 2026-03-14 113016.png.png,md_kw,15.84,15.84,0.722,UNCERT_DECIMAL|HUMAN_REVIEW_REQUIRED|LOW_CONFIDENCE,Conflicting decimal positions among candidates
+61617d59_Screenshot 2026-03-14 113016.png.png,meter_serial,5.90,5.90,0.324,NONMATCH_SERIAL,Serial doesn't match expected pattern
+6cdfe1ff_image.png.png,kwh,100,100,0.483,LOW_CONFIDENCE,calibrated conf=0.48
+6cdfe1ff_image.png.png,kvah,81,81,0.515,LOW_CONFIDENCE,calibrated conf=0.51
+6cdfe1ff_image.png.png,md_kw,15,15,0.562,LOW_CONFIDENCE,calibrated conf=0.56
+6cdfe1ff_image.png.png,demand_kva,86,86,0.671,LOW_CONFIDENCE,calibrated conf=0.67
+94a8b7ee_image.png.png,kwh,100,100,0.483,LOW_CONFIDENCE,calibrated conf=0.48
+94a8b7ee_image.png.png,kvah,81,81,0.515,LOW_CONFIDENCE,calibrated conf=0.51
+94a8b7ee_image.png.png,md_kw,15,15,0.562,LOW_CONFIDENCE,calibrated conf=0.56
+94a8b7ee_image.png.png,demand_kva,86,86,0.671,LOW_CONFIDENCE,calibrated conf=0.67
+c6ff3ec0_Screenshot 2026-03-14 014904.png,kwh,100,100,0.483,LOW_CONFIDENCE,calibrated conf=0.48
+c6ff3ec0_Screenshot 2026-03-14 014904.png,kvah,81,81,0.515,LOW_CONFIDENCE,calibrated conf=0.51
+c6ff3ec0_Screenshot 2026-03-14 014904.png,md_kw,15,15,0.562,LOW_CONFIDENCE,calibrated conf=0.56
+c6ff3ec0_Screenshot 2026-03-14 014904.png,demand_kva,86,86,0.671,LOW_CONFIDENCE,calibrated conf=0.67
+d8e86889_Screenshot 2026-03-14 111946.png.png,kwh,1000120331,1000120331,0.285,OUT_OF_RANGE|LOW_CONFIDENCE,Above max 999999
+d8e86889_Screenshot 2026-03-14 111946.png.png,kvah,000.00,000.00,0.849,UNCERT_DECIMAL,Decimal places 2 > allowed 1
+d8e86889_Screenshot 2026-03-14 111946.png.png,md_kw,.25,.25,0.742,LOW_CONFIDENCE,calibrated conf=0.74
+d8e86889_Screenshot 2026-03-14 111946.png.png,meter_serial,51,51,0.384,NONMATCH_SERIAL,Serial doesn't match expected pattern
+ec80b21e_Screenshot 2026-03-14 014904.png.png,kwh,100,100,0.483,LOW_CONFIDENCE,calibrated conf=0.48
+ec80b21e_Screenshot 2026-03-14 014904.png.png,kvah,81,81,0.515,LOW_CONFIDENCE,calibrated conf=0.51
+ec80b21e_Screenshot 2026-03-14 014904.png.png,md_kw,15,15,0.562,LOW_CONFIDENCE,calibrated conf=0.56
+ec80b21e_Screenshot 2026-03-14 014904.png.png,demand_kva,86,86,0.671,LOW_CONFIDENCE,calibrated conf=0.67

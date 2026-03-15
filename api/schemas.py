@@ -12,6 +12,11 @@ class FieldOutput(BaseModel):
     decimals: Optional[int] = None
     candidates: Optional[List[CandidateDetail]] = None
     debug: Optional[Dict[str, Any]] = None
+    # Post-processor enrichment (v2.1)
+    decimal_confidence: Optional[float] = None
+    decimal_position: Optional[int] = None
+    flags: Optional[List[str]] = None
+    reason: Optional[str] = None
 
 class ImageQualityFlags(BaseModel):
     blur: bool

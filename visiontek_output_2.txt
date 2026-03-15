@@ -1,0 +1,152 @@
+Testing inference on: D:\GPT_instinct\meter_test.png
+DecimalDetector: CNN load failed (Error(s) in loading state_dict for MobileNetV3:
+	Missing key(s) in state_dict: "features.0.0.weight", "features.0.1.weight", "features.0.1.bias", "features.0.1.running_mean", "features.0.1.running_var", "features.1.block.0.0.weight", "features.1.block.0.1.weight", "features.1.block.0.1.bias", "features.1.block.0.1.running_mean", "features.1.block.0.1.running_var", "features.1.block.1.fc1.weight", "features.1.block.1.fc1.bias", "features.1.block.1.fc2.weight", "features.1.block.1.fc2.bias", "features.1.block.2.0.weight", "features.1.block.2.1.weight", "features.1.block.2.1.bias", "features.1.block.2.1.running_mean", "features.1.block.2.1.running_var", "features.2.block.0.0.weight", "features.2.block.0.1.weight", "features.2.block.0.1.bias", "features.2.block.0.1.running_mean", "features.2.block.0.1.running_var", "features.2.block.1.0.weight", "features.2.block.1.1.weight", "features.2.block.1.1.bias", "features.2.block.1.1.running_mean", "features.2.block.1.1.running_var", "features.2.block.2.0.weight", "features.2.block.2.1.weight", "features.2.block.2.1.bias", "features.2.block.2.1.running_mean", "features.2.block.2.1.running_var", "features.3.block.0.0.weight", "features.3.block.0.1.weight", "features.3.block.0.1.bias", "features.3.block.0.1.running_mean", "features.3.block.0.1.running_var", "features.3.block.1.0.weight", "features.3.block.1.1.weight", "features.3.block.1.1.bias", "features.3.block.1.1.running_mean", "features.3.block.1.1.running_var", "features.3.block.2.0.weight", "features.3.block.2.1.weight", "features.3.block.2.1.bias", "features.3.block.2.1.running_mean", "features.3.block.2.1.running_var", "features.4.block.0.0.weight", "features.4.block.0.1.weight", "features.4.block.0.1.bias", "features.4.block.0.1.running_mean", "features.4.block.0.1.running_var", "features.4.block.1.0.weight", "features.4.block.1.1.weight", "features.4.block.1.1.bias", "features.4.block.1.1.running_mean", "features.4.block.1.1.running_var", "features.4.block.2.fc1.weight", "features.4.block.2.fc1.bias", "features.4.block.2.fc2.weight", "features.4.block.2.fc2.bias", "features.4.block.3.0.weight", "features.4.block.3.1.weight", "features.4.block.3.1.bias", "features.4.block.3.1.running_mean", "features.4.block.3.1.running_var", "features.5.block.0.0.weight", "features.5.block.0.1.weight", "features.5.block.0.1.bias", "features.5.block.0.1.running_mean", "features.5.block.0.1.running_var", "features.5.block.1.0.weight", "features.5.block.1.1.weight", "features.5.block.1.1.bias", "features.5.block.1.1.running_mean", "features.5.block.1.1.running_var", "features.5.block.2.fc1.weight", "features.5.block.2.fc1.bias", "features.5.block.2.fc2.weight", "features.5.block.2.fc2.bias", "features.5.block.3.0.weight", "features.5.block.3.1.weight", "features.5.block.3.1.bias", "features.5.block.3.1.running_mean", "features.5.block.3.1.running_var", "features.6.block.0.0.weight", "features.6.block.0.1.weight", "features.6.block.0.1.bias", "features.6.block.0.1.running_mean", "features.6.block.0.1.running_var", "features.6.block.1.0.weight", "features.6.block.1.1.weight", "features.6.block.1.1.bias", "features.6.block.1.1.running_mean", "features.6.block.1.1.running_var", "features.6.block.2.fc1.weight", "features.6.block.2.fc1.bias", "features.6.block.2.fc2.weight", "features.6.block.2.fc2.bias", "features.6.block.3.0.weight", "features.6.block.3.1.weight", "features.6.block.3.1.bias", "features.6.block.3.1.running_mean", "features.6.block.3.1.running_var", "features.7.block.0.0.weight", "features.7.block.0.1.weight", "features.7.block.0.1.bias", "features.7.block.0.1.running_mean", "features.7.block.0.1.running_var", "features.7.block.1.0.weight", "features.7.block.1.1.weight", "features.7.block.1.1.bias", "features.7.block.1.1.running_mean", "features.7.block.1.1.running_var", "features.7.block.2.fc1.weight", "features.7.block.2.fc1.bias", "features.7.block.2.fc2.weight", "features.7.block.2.fc2.bias", "features.7.block.3.0.weight", "features.7.block.3.1.weight", "features.7.block.3.1.bias", "features.7.block.3.1.running_mean", "features.7.block.3.1.running_var", "features.8.block.0.0.weight", "features.8.block.0.1.weight", "features.8.block.0.1.bias", "features.8.block.0.1.running_mean", "features.8.block.0.1.running_var", "features.8.block.1.0.weight", "features.8.block.1.1.weight", "features.8.block.1.1.bias", "features.8.block.1.1.running_mean", "features.8.block.1.1.running_var", "features.8.block.2.fc1.weight", "features.8.block.2.fc1.bias", "features.8.block.2.fc2.weight", "features.8.block.2.fc2.bias", "features.8.block.3.0.weight", "features.8.block.3.1.weight", "features.8.block.3.1.bias", "features.8.block.3.1.running_mean", "features.8.block.3.1.running_var", "features.9.block.0.0.weight", "features.9.block.0.1.weight", "features.9.block.0.1.bias", "features.9.block.0.1.running_mean", "features.9.block.0.1.running_var", "features.9.block.1.0.weight", "features.9.block.1.1.weight", "features.9.block.1.1.bias", "features.9.block.1.1.running_mean", "features.9.block.1.1.running_var", "features.9.block.2.fc1.weight", "features.9.block.2.fc1.bias", "features.9.block.2.fc2.weight", "features.9.block.2.fc2.bias", "features.9.block.3.0.weight", "features.9.block.3.1.weight", "features.9.block.3.1.bias", "features.9.block.3.1.running_mean", "features.9.block.3.1.running_var", "features.10.block.0.0.weight", "features.10.block.0.1.weight", "features.10.block.0.1.bias", "features.10.block.0.1.running_mean", "features.10.block.0.1.running_var", "features.10.block.1.0.weight", "features.10.block.1.1.weight", "features.10.block.1.1.bias", "features.10.block.1.1.running_mean", "features.10.block.1.1.running_var", "features.10.block.2.fc1.weight", "features.10.block.2.fc1.bias", "features.10.block.2.fc2.weight", "features.10.block.2.fc2.bias", "features.10.block.3.0.weight", "features.10.block.3.1.weight", "features.10.block.3.1.bias", "features.10.block.3.1.running_mean", "features.10.block.3.1.running_var", "features.11.block.0.0.weight", "features.11.block.0.1.weight", "features.11.block.0.1.bias", "features.11.block.0.1.running_mean", "features.11.block.0.1.running_var", "features.11.block.1.0.weight", "features.11.block.1.1.weight", "features.11.block.1.1.bias", "features.11.block.1.1.running_mean", "features.11.block.1.1.running_var", "features.11.block.2.fc1.weight", "features.11.block.2.fc1.bias", "features.11.block.2.fc2.weight", "features.11.block.2.fc2.bias", "features.11.block.3.0.weight", "features.11.block.3.1.weight", "features.11.block.3.1.bias", "features.11.block.3.1.running_mean", "features.11.block.3.1.running_var", "features.12.0.weight", "features.12.1.weight", "features.12.1.bias", "features.12.1.running_mean", "features.12.1.running_var", "classifier.0.weight", "classifier.0.bias", "classifier.3.weight", "classifier.3.bias". 
+	Unexpected key(s) in state_dict: "conv1.weight", "conv1.bias", "conv2.weight", "conv2.bias", "fc1.weight", "fc1.bias", "fc2.weight", "fc2.bias". ), using CV fallback.
+TrOCRAdapter loaded: microsoft/trocr-base-printed on cpu
+Warning: Could not load PaddleOCR (Unknown argument: show_log). Running in mock mode.
+Calibrator[kwh]: loaded from data/calibration\kwh_isotonic.pkl
+Warning: Could not load PaddleOCR (Unknown argument: show_log). Running in mock mode.
+TrOCRAdapter loaded: microsoft/trocr-base-printed on cpu
+
+0: 384x640 1 serial, 128.2ms
+Speed: 139.2ms preprocess, 128.2ms inference, 22.0ms postprocess per image at shape (1, 3, 384, 640)
+Status Code: 200
+Response JSON:
+{
+  "image_id": "image.png",
+  "meter_serial": {
+    "value": "5",
+    "probability": 0.3791,
+    "sources": [
+      "trocr",
+      "paddleocr",
+      "easyocr"
+    ],
+    "decimals": 0,
+    "candidates": [
+      {
+        "value": "5",
+        "score": 1.0
+      }
+    ],
+    "debug": {
+      "raw_ocr": "5",
+      "trocr": "5",
+      "paddle": "",
+      "easyocr": ""
+    },
+    "decimal_confidence": null,
+    "decimal_position": null,
+    "flags": [
+      "NONMATCH_SERIAL"
+    ],
+    "reason": "Serial doesn't match expected pattern"
+  },
+  "kwh": {
+    "value": "\u2014",
+    "probability": 0.0,
+    "sources": null,
+    "decimals": null,
+    "candidates": null,
+    "debug": null,
+    "decimal_confidence": null,
+    "decimal_position": null,
+    "flags": null,
+    "reason": null
+  },
+  "kvah": {
+    "value": "1",
+    "probability": 0.863,
+    "sources": [
+      "trocr",
+      "paddleocr",
+      "easyocr"
+    ],
+    "decimals": 0,
+    "candidates": [
+      {
+        "value": "1",
+        "score": 1.0
+      }
+    ],
+    "debug": {
+      "raw_ocr": "1",
+      "trocr": "1",
+      "paddle": "",
+      "easyocr": ""
+    },
+    "decimal_confidence": 0.863,
+    "decimal_position": 0,
+    "flags": [],
+    "reason": "calibrated conf=0.86"
+  },
+  "md_kw": {
+    "value": "5.00",
+    "probability": 0.8374,
+    "sources": [
+      "trocr",
+      "paddleocr",
+      "easyocr"
+    ],
+    "decimals": 1,
+    "candidates": [
+      {
+        "value": "5.00",
+        "score": 1.0
+      }
+    ],
+    "debug": {
+      "raw_ocr": "5.00",
+      "trocr": "5.00",
+      "paddle": "",
+      "easyocr": ""
+    },
+    "decimal_confidence": 0.8374,
+    "decimal_position": 2,
+    "flags": [],
+    "reason": "calibrated conf=0.84"
+  },
+  "demand_kva": {
+    "value": "1",
+    "probability": 0.8449,
+    "sources": [
+      "trocr",
+      "paddleocr",
+      "easyocr"
+    ],
+    "decimals": 0,
+    "candidates": [
+      {
+        "value": "1",
+        "score": 1.0
+      }
+    ],
+    "debug": {
+      "raw_ocr": "1",
+      "trocr": "1",
+      "paddle": "",
+      "easyocr": ""
+    },
+    "decimal_confidence": 0.8449,
+    "decimal_position": 0,
+    "flags": [],
+    "reason": "calibrated conf=0.84"
+  },
+  "image_quality": {
+    "blur": false,
+    "glare": false,
+    "tilt_deg": 0.0,
+    "not_legible": false
+  },
+  "reason_codes": [],
+  "qc_flag": true,
+  "processing_latency_ms": 18778,
+  "artifacts": {
+    "crop_url": "https://s3.agm-infra.internal/debug_artifacts/crop_fe9d02cf_image.png.png?sig=stub&exp=3600",
+    "color_mask_url": null,
+    "alignment_map": "https://s3.agm-infra.internal/alignment/image.png?sig=stub&exp=3600",
+    "glare_mask": null,
+    "sr_url": "https://s3.agm-infra.internal/debug_artifacts/sr_fe9d02cf_image.png.png?sig=stub&exp=3600",
+    "model_outputs": null
+  }
+}

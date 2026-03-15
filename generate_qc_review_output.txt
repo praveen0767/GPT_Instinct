@@ -1,0 +1,103 @@
+D:\GPT_instinct\.venv\Lib\site-packages\requests\__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (7.0.1)/charset_normalizer (3.4.5) doesn't match a supported version!
+  warnings.warn(
+D:\GPT_instinct\ag_module\sr.py:28: UserWarning: Real-ESRGAN not installed. Falling back to Lanczos interpolation. `pip install basicsr realesrgan`
+  warnings.warn("Real-ESRGAN not installed. Falling back to Lanczos interpolation. `pip install basicsr realesrgan`")
+2026-03-15 14:08:12,359 INFO    httpx HTTP Request: GET https://huggingface.co/api/models/microsoft/trocr-base-printed/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-15 14:08:12,680 INFO    httpx HTTP Request: HEAD https://huggingface.co/microsoft/trocr-base-printed/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-03-15 14:08:12,984 INFO    httpx HTTP Request: HEAD https://huggingface.co/microsoft/trocr-base-printed/resolve/main/chat_template.json "HTTP/1.1 404 Not Found"
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-03-15 14:08:12,984 WARNING huggingface_hub.utils._http Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-03-15 14:08:13,287 INFO    httpx HTTP Request: HEAD https://huggingface.co/microsoft/trocr-base-printed/resolve/main/chat_template.jinja "HTTP/1.1 404 Not Found"
+2026-03-15 14:08:13,592 INFO    httpx HTTP Request: HEAD https://huggingface.co/microsoft/trocr-base-printed/resolve/main/audio_tokenizer_config.json "HTTP/1.1 404 Not Found"
+2026-03-15 14:08:14,274 INFO    httpx HTTP Request: HEAD https://huggingface.co/microsoft/trocr-base-printed/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-03-15 14:08:15,032 INFO    httpx HTTP Request: HEAD https://huggingface.co/microsoft/trocr-base-printed/resolve/main/preprocessor_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-15 14:08:15,931 INFO    httpx HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/microsoft/trocr-base-printed/93450be3f1ed40a930690d951ef3932687cc1892/preprocessor_config.json "HTTP/1.1 200 OK"
+The image processor of type `ViTImageProcessor` is now loaded as a fast processor by default, even if the model checkpoint was saved with a slow processor. This is a breaking change and may produce slightly different outputs. To continue using the slow processor, instantiate this class with `use_fast=False`. 
+2026-03-15 14:08:17,093 INFO    httpx HTTP Request: HEAD https://huggingface.co/microsoft/trocr-base-printed/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-03-15 14:08:17,765 INFO    httpx HTTP Request: HEAD https://huggingface.co/microsoft/trocr-base-printed/resolve/main/preprocessor_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-15 14:08:17,846 INFO    httpx HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/microsoft/trocr-base-printed/93450be3f1ed40a930690d951ef3932687cc1892/preprocessor_config.json "HTTP/1.1 200 OK"
+2026-03-15 14:08:18,145 INFO    httpx HTTP Request: HEAD https://huggingface.co/microsoft/trocr-base-printed/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-15 14:08:18,358 INFO    httpx HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/microsoft/trocr-base-printed/93450be3f1ed40a930690d951ef3932687cc1892/config.json "HTTP/1.1 200 OK"
+2026-03-15 14:08:18,816 INFO    httpx HTTP Request: HEAD https://huggingface.co/microsoft/trocr-base-printed/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-15 14:08:18,901 INFO    httpx HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/microsoft/trocr-base-printed/93450be3f1ed40a930690d951ef3932687cc1892/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-15 14:08:19,210 INFO    httpx HTTP Request: GET https://huggingface.co/api/models/microsoft/trocr-base-printed/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-15 14:08:19,517 INFO    httpx HTTP Request: GET https://huggingface.co/api/models/microsoft/trocr-base-printed/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-03-15 14:08:20,516 INFO    httpx HTTP Request: HEAD https://huggingface.co/microsoft/trocr-base-printed/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-15 14:08:20,661 INFO    httpx HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/microsoft/trocr-base-printed/93450be3f1ed40a930690d951ef3932687cc1892/config.json "HTTP/1.1 200 OK"
+2026-03-15 14:08:20,983 INFO    httpx HTTP Request: HEAD https://huggingface.co/microsoft/trocr-base-printed/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+DecimalDetector: CNN load failed (Error(s) in loading state_dict for MobileNetV3:
+	Missing key(s) in state_dict: "features.0.0.weight", "features.0.1.weight", "features.0.1.bias", "features.0.1.running_mean", "features.0.1.running_var", "features.1.block.0.0.weight", "features.1.block.0.1.weight", "features.1.block.0.1.bias", "features.1.block.0.1.running_mean", "features.1.block.0.1.running_var", "features.1.block.1.fc1.weight", "features.1.block.1.fc1.bias", "features.1.block.1.fc2.weight", "features.1.block.1.fc2.bias", "features.1.block.2.0.weight", "features.1.block.2.1.weight", "features.1.block.2.1.bias", "features.1.block.2.1.running_mean", "features.1.block.2.1.running_var", "features.2.block.0.0.weight", "features.2.block.0.1.weight", "features.2.block.0.1.bias", "features.2.block.0.1.running_mean", "features.2.block.0.1.running_var", "features.2.block.1.0.weight", "features.2.block.1.1.weight", "features.2.block.1.1.bias", "features.2.block.1.1.running_mean", "features.2.block.1.1.running_var", "features.2.block.2.0.weight", "features.2.block.2.1.weight", "features.2.block.2.1.bias", "features.2.block.2.1.running_mean", "features.2.block.2.1.running_var", "features.3.block.0.0.weight", "features.3.block.0.1.weight", "features.3.block.0.1.bias", "features.3.block.0.1.running_mean", "features.3.block.0.1.running_var", "features.3.block.1.0.weight", "features.3.block.1.1.weight", "features.3.block.1.1.bias", "features.3.block.1.1.running_mean", "features.3.block.1.1.running_var", "features.3.block.2.0.weight", "features.3.block.2.1.weight", "features.3.block.2.1.bias", "features.3.block.2.1.running_mean", "features.3.block.2.1.running_var", "features.4.block.0.0.weight", "features.4.block.0.1.weight", "features.4.block.0.1.bias", "features.4.block.0.1.running_mean", "features.4.block.0.1.running_var", "features.4.block.1.0.weight", "features.4.block.1.1.weight", "features.4.block.1.1.bias", "features.4.block.1.1.running_mean", "features.4.block.1.1.running_var", "features.4.block.2.fc1.weight", "features.4.block.2.fc1.bias", "features.4.block.2.fc2.weight", "features.4.block.2.fc2.bias", "features.4.block.3.0.weight", "features.4.block.3.1.weight", "features.4.block.3.1.bias", "features.4.block.3.1.running_mean", "features.4.block.3.1.running_var", "features.5.block.0.0.weight", "features.5.block.0.1.weight", "features.5.block.0.1.bias", "features.5.block.0.1.running_mean", "features.5.block.0.1.running_var", "features.5.block.1.0.weight", "features.5.block.1.1.weight", "features.5.block.1.1.bias", "features.5.block.1.1.running_mean", "features.5.block.1.1.running_var", "features.5.block.2.fc1.weight", "features.5.block.2.fc1.bias", "features.5.block.2.fc2.weight", "features.5.block.2.fc2.bias", "features.5.block.3.0.weight", "features.5.block.3.1.weight", "features.5.block.3.1.bias", "features.5.block.3.1.running_mean", "features.5.block.3.1.running_var", "features.6.block.0.0.weight", "features.6.block.0.1.weight", "features.6.block.0.1.bias", "features.6.block.0.1.running_mean", "features.6.block.0.1.running_var", "features.6.block.1.0.weight", "features.6.block.1.1.weight", "features.6.block.1.1.bias", "features.6.block.1.1.running_mean", "features.6.block.1.1.running_var", "features.6.block.2.fc1.weight", "features.6.block.2.fc1.bias", "features.6.block.2.fc2.weight", "features.6.block.2.fc2.bias", "features.6.block.3.0.weight", "features.6.block.3.1.weight", "features.6.block.3.1.bias", "features.6.block.3.1.running_mean", "features.6.block.3.1.running_var", "features.7.block.0.0.weight", "features.7.block.0.1.weight", "features.7.block.0.1.bias", "features.7.block.0.1.running_mean", "features.7.block.0.1.running_var", "features.7.block.1.0.weight", "features.7.block.1.1.weight", "features.7.block.1.1.bias", "features.7.block.1.1.running_mean", "features.7.block.1.1.running_var", "features.7.block.2.fc1.weight", "features.7.block.2.fc1.bias", "features.7.block.2.fc2.weight", "features.7.block.2.fc2.bias", "features.7.block.3.0.weight", "features.7.block.3.1.weight", "features.7.block.3.1.bias", "features.7.block.3.1.running_mean", "features.7.block.3.1.running_var", "features.8.block.0.0.weight", "features.8.block.0.1.weight", "features.8.block.0.1.bias", "features.8.block.0.1.running_mean", "features.8.block.0.1.running_var", "features.8.block.1.0.weight", "features.8.block.1.1.weight", "features.8.block.1.1.bias", "features.8.block.1.1.running_mean", "features.8.block.1.1.running_var", "features.8.block.2.fc1.weight", "features.8.block.2.fc1.bias", "features.8.block.2.fc2.weight", "features.8.block.2.fc2.bias", "features.8.block.3.0.weight", "features.8.block.3.1.weight", "features.8.block.3.1.bias", "features.8.block.3.1.running_mean", "features.8.block.3.1.running_var", "features.9.block.0.0.weight", "features.9.block.0.1.weight", "features.9.block.0.1.bias", "features.9.block.0.1.running_mean", "features.9.block.0.1.running_var", "features.9.block.1.0.weight", "features.9.block.1.1.weight", "features.9.block.1.1.bias", "features.9.block.1.1.running_mean", "features.9.block.1.1.running_var", "features.9.block.2.fc1.weight", "features.9.block.2.fc1.bias", "features.9.block.2.fc2.weight", "features.9.block.2.fc2.bias", "features.9.block.3.0.weight", "features.9.block.3.1.weight", "features.9.block.3.1.bias", "features.9.block.3.1.running_mean", "features.9.block.3.1.running_var", "features.10.block.0.0.weight", "features.10.block.0.1.weight", "features.10.block.0.1.bias", "features.10.block.0.1.running_mean", "features.10.block.0.1.running_var", "features.10.block.1.0.weight", "features.10.block.1.1.weight", "features.10.block.1.1.bias", "features.10.block.1.1.running_mean", "features.10.block.1.1.running_var", "features.10.block.2.fc1.weight", "features.10.block.2.fc1.bias", "features.10.block.2.fc2.weight", "features.10.block.2.fc2.bias", "features.10.block.3.0.weight", "features.10.block.3.1.weight", "features.10.block.3.1.bias", "features.10.block.3.1.running_mean", "features.10.block.3.1.running_var", "features.11.block.0.0.weight", "features.11.block.0.1.weight", "features.11.block.0.1.bias", "features.11.block.0.1.running_mean", "features.11.block.0.1.running_var", "features.11.block.1.0.weight", "features.11.block.1.1.weight", "features.11.block.1.1.bias", "features.11.block.1.1.running_mean", "features.11.block.1.1.running_var", "features.11.block.2.fc1.weight", "features.11.block.2.fc1.bias", "features.11.block.2.fc2.weight", "features.11.block.2.fc2.bias", "features.11.block.3.0.weight", "features.11.block.3.1.weight", "features.11.block.3.1.bias", "features.11.block.3.1.running_mean", "features.11.block.3.1.running_var", "features.12.0.weight", "features.12.1.weight", "features.12.1.bias", "features.12.1.running_mean", "features.12.1.running_var", "classifier.0.weight", "classifier.0.bias", "classifier.3.weight", "classifier.3.bias". 
+	Unexpected key(s) in state_dict: "conv1.weight", "conv1.bias", "conv2.weight", "conv2.bias", "fc1.weight", "fc1.bias", "fc2.weight", "fc2.bias". ), using CV fallback.
+
+Loading weights:   0%|          | 0/478 [00:00<?, ?it/s]
+Loading weights:  79%|#######9  | 378/478 [00:00<00:00, 3777.13it/s]
+Loading weights: 100%|##########| 478/478 [00:00<00:00, 3776.64it/s]
+VisionEncoderDecoderModel LOAD REPORT from: microsoft/trocr-base-printed
+Key                         | Status  | 
+----------------------------+---------+-
+encoder.pooler.dense.weight | MISSING | 
+encoder.pooler.dense.bias   | MISSING | 
+
+Notes:
+- MISSING	:those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+2026-03-15 14:08:22,061 INFO    httpx HTTP Request: HEAD https://huggingface.co/microsoft/trocr-base-printed/resolve/main/generation_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-15 14:08:22,152 INFO    httpx HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/microsoft/trocr-base-printed/93450be3f1ed40a930690d951ef3932687cc1892/generation_config.json "HTTP/1.1 200 OK"
+Checking connectivity to the model hosters, this may take a while. To bypass this check, set `PADDLE_PDX_DISABLE_MODEL_SOURCE_CHECK` to `True`.
+2026-03-15 14:08:30,608 WARNING easyocr.easyocr Using CPU. Note: This module is much faster with a GPU.
+2026-03-15 14:08:33,804 INFO    ag_ocr All models loaded successfully.
+2026-03-15 14:08:33,812 INFO    ag_ocr {"request_id": "8fca5948", "ts": 1773563913.8120449, "event": "upload_start", "filename": "Screenshot 2026-03-14 014904.png", "content_type": "image/png"}
+TrOCRAdapter loaded: microsoft/trocr-base-printed on cpu
+Warning: Could not load PaddleOCR (Unknown argument: use_gpu). Running in mock mode.
+Calibrator[kwh]: loaded from data/calibration\kwh_isotonic.pkl
+Processing: D:\GPT_instinct\Screenshot 2026-03-14 014904.png
+
+0: 544x640 (no detections), 158.9ms
+Speed: 139.8ms preprocess, 158.9ms inference, 0.9ms postprocess per image at shape (1, 3, 544, 640)
+D:\GPT_instinct\.venv\Lib\site-packages\torch\utils\data\dataloader.py:775: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+2026-03-15 14:08:51,419 INFO    ag_ocr {"request_id": "8fca5948", "ts": 1773563931.4191937, "event": "infer_complete", "latency_ms": 17607, "qc_flag": true, "reason_codes": ["LOW_CONFIDENCE", "GLARE"], "kwh_value": "100", "kwh_prob": 0.4829, "kvah_value": "81", "glare": true, "dec_conf": 0.8500000000000001}
+2026-03-15 14:08:51,421 INFO    httpx HTTP Request: POST http://testserver/infer "HTTP/1.1 200 OK"
+2026-03-15 14:08:51,425 INFO    ag_ocr {"request_id": "30a03aee", "ts": 1773563931.4254684, "event": "upload_start", "filename": "61617d59_Screenshot 2026-03-14 113016.png.png", "content_type": "image/png"}
+Processing: failed_cases\61617d59_Screenshot 2026-03-14 113016.png.png
+
+0: 576x640 (no detections), 96.5ms
+Speed: 3.6ms preprocess, 96.5ms inference, 0.7ms postprocess per image at shape (1, 3, 576, 640)
+2026-03-15 14:09:07,792 INFO    ag_ocr {"request_id": "30a03aee", "ts": 1773563947.792132, "event": "infer_complete", "latency_ms": 16366, "qc_flag": true, "reason_codes": ["LOW_CONFIDENCE", "HUMAN_REVIEW_REQUIRED", "UNCERT_DECIMAL"], "kwh_value": "11", "kwh_prob": 0.6473, "kvah_value": "1", "glare": false, "dec_conf": 0.9}
+2026-03-15 14:09:07,794 INFO    httpx HTTP Request: POST http://testserver/infer "HTTP/1.1 200 OK"
+2026-03-15 14:09:07,796 INFO    ag_ocr {"request_id": "b3974b3c", "ts": 1773563947.7966173, "event": "upload_start", "filename": "6cdfe1ff_image.png.png", "content_type": "image/png"}
+Processing: failed_cases\6cdfe1ff_image.png.png
+
+0: 544x640 (no detections), 73.2ms
+Speed: 3.7ms preprocess, 73.2ms inference, 0.6ms postprocess per image at shape (1, 3, 544, 640)
+2026-03-15 14:09:23,494 INFO    ag_ocr {"request_id": "b3974b3c", "ts": 1773563963.4946702, "event": "infer_complete", "latency_ms": 15698, "qc_flag": true, "reason_codes": ["LOW_CONFIDENCE", "GLARE"], "kwh_value": "100", "kwh_prob": 0.4829, "kvah_value": "81", "glare": true, "dec_conf": 0.8500000000000001}
+2026-03-15 14:09:23,496 INFO    httpx HTTP Request: POST http://testserver/infer "HTTP/1.1 200 OK"
+2026-03-15 14:09:23,498 INFO    ag_ocr {"request_id": "30a748dc", "ts": 1773563963.4985435, "event": "upload_start", "filename": "94a8b7ee_image.png.png", "content_type": "image/png"}
+Processing: failed_cases\94a8b7ee_image.png.png
+
+0: 544x640 (no detections), 71.1ms
+Speed: 3.9ms preprocess, 71.1ms inference, 0.7ms postprocess per image at shape (1, 3, 544, 640)
+2026-03-15 14:09:39,617 INFO    ag_ocr {"request_id": "30a748dc", "ts": 1773563979.6177268, "event": "infer_complete", "latency_ms": 16119, "qc_flag": true, "reason_codes": ["LOW_CONFIDENCE", "GLARE"], "kwh_value": "100", "kwh_prob": 0.4829, "kvah_value": "81", "glare": true, "dec_conf": 0.8500000000000001}
+2026-03-15 14:09:39,619 INFO    httpx HTTP Request: POST http://testserver/infer "HTTP/1.1 200 OK"
+2026-03-15 14:09:39,622 INFO    ag_ocr {"request_id": "de08caa2", "ts": 1773563979.6222098, "event": "upload_start", "filename": "c6ff3ec0_Screenshot 2026-03-14 014904.png", "content_type": "image/png"}
+Processing: failed_cases\c6ff3ec0_Screenshot 2026-03-14 014904.png
+
+0: 544x640 (no detections), 81.7ms
+Speed: 4.0ms preprocess, 81.7ms inference, 0.7ms postprocess per image at shape (1, 3, 544, 640)
+2026-03-15 14:09:54,604 INFO    ag_ocr {"request_id": "de08caa2", "ts": 1773563994.6041741, "event": "infer_complete", "latency_ms": 14981, "qc_flag": true, "reason_codes": ["LOW_CONFIDENCE", "GLARE"], "kwh_value": "100", "kwh_prob": 0.4829, "kvah_value": "81", "glare": true, "dec_conf": 0.8500000000000001}
+2026-03-15 14:09:54,605 INFO    httpx HTTP Request: POST http://testserver/infer "HTTP/1.1 200 OK"
+2026-03-15 14:09:54,607 INFO    ag_ocr {"request_id": "bc8355bd", "ts": 1773563994.607863, "event": "upload_start", "filename": "d8e86889_Screenshot 2026-03-14 111946.png.png", "content_type": "image/png"}
+Processing: failed_cases\d8e86889_Screenshot 2026-03-14 111946.png.png
+
+0: 448x640 (no detections), 75.9ms
+Speed: 1.5ms preprocess, 75.9ms inference, 0.5ms postprocess per image at shape (1, 3, 448, 640)
+2026-03-15 14:10:11,847 INFO    ag_ocr {"request_id": "bc8355bd", "ts": 1773564011.8471136, "event": "infer_complete", "latency_ms": 17239, "qc_flag": true, "reason_codes": ["LOW_CONFIDENCE", "OUT_OF_RANGE", "UNCERT_DECIMAL"], "kwh_value": "1000120331", "kwh_prob": 0.2852, "kvah_value": "000.00", "glare": false, "dec_conf": 0.7000000000000001}
+2026-03-15 14:10:11,849 INFO    httpx HTTP Request: POST http://testserver/infer "HTTP/1.1 200 OK"
+2026-03-15 14:10:11,851 INFO    ag_ocr {"request_id": "f8640a58", "ts": 1773564011.8517108, "event": "upload_start", "filename": "ec80b21e_Screenshot 2026-03-14 014904.png.png", "content_type": "image/png"}
+Processing: failed_cases\ec80b21e_Screenshot 2026-03-14 014904.png.png
+
+0: 544x640 (no detections), 54.9ms
+Speed: 3.0ms preprocess, 54.9ms inference, 0.5ms postprocess per image at shape (1, 3, 544, 640)
+2026-03-15 14:10:27,026 INFO    ag_ocr {"request_id": "f8640a58", "ts": 1773564027.0266025, "event": "infer_complete", "latency_ms": 15174, "qc_flag": true, "reason_codes": ["LOW_CONFIDENCE", "GLARE"], "kwh_value": "100", "kwh_prob": 0.4829, "kvah_value": "81", "glare": true, "dec_conf": 0.8500000000000001}
+2026-03-15 14:10:27,027 INFO    httpx HTTP Request: POST http://testserver/infer "HTTP/1.1 200 OK"
+
+Generated qc_review.csv with low-confidence and flagged extractions for review.

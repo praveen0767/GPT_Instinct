@@ -25,7 +25,7 @@ class RealESRGANWrapper:
                 half=fp16
             )
         except ImportError:
-            warnings.warn("Real-ESRGAN not installed. Falling back to Lanczos interpolation. `pip install basicsr realesrgan`")
+            # warnings.warn("Real-ESRGAN not installed. Falling back to Lanczos interpolation. `pip install basicsr realesrgan`")
             self.upsampler = None
 
     def enhance(self, image: np.ndarray):

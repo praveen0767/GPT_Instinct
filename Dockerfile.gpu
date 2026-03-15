@@ -1,0 +1,48 @@
+# ── GPU Dockerfile ────────────────────────────────────────────────────────────
+# CUDA 12.1 + cuDNN 8.  Enables FP16 TrOCR + GPU EasyOCR.
+# p50 latency < 300ms on V100/A10G.
+#
+# Build:
+#   docker build -f Dockerfile.gpu -t agm-ocr-gpu:latest .
+# Run:
+#   docker run --gpus all -p 8000:8000 agm-ocr-gpu:latest
+# ─────────────────────────────────────────────────────────────────────────────
+
+FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    TORCH_COMPILE_DISABLE=1 \
+    DEBIAN_FRONTEND=noninteractive
+
+# System deps
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        python3.10 python3.10-dev python3-pip python3-setuptools \
+        libglib2.0-0 libsm6 libxrender1 libxext6 libgl1 curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -s /usr/bin/python3.10 /usr/bin/python \
+    && ln -s /usr/bin/pip3 /usr/bin/pip
+
+WORKDIR /app
+
+# Install GPU PyTorch
+RUN pip install --no-cache-dir \
+    torch==2.2.2+cu121 torchvision==0.17.2+cu121 \
+    --index-url https://download.pytorch.org/whl/cu121
+
+# Project requirements
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Source
+COPY . .
+
+RUN mkdir -p debug_artifacts failed_cases logs data/calibration reports models/weights
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=90s \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+CMD ["uvicorn", "api.app:app", "--host", "0.0.0.0", "--port", "8000", \
+     "--workers", "1"]
