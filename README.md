@@ -1,4 +1,4 @@
-# ⚡ GPT Instinct (Anti-Gravity Pipeline)
+# ⚡ GPT Instinct (OCR Pipeline)
 
 Welcome to the **GPT Instinct** repository! This project implements an enterprise-grade, **Structurally-Aware Computer Vision Architecture** specifically designed for high-accuracy utility meter reading in the field.
 
@@ -54,7 +54,7 @@ streamlit run app.py
 - **Impact:** Eliminates manual data-entry costs, detects fraudulent readings, and enables scalable, zero-touch utility billing operations.
 
 ---
-*Developed for the iDEA Hackathon.*
+*Developed for the Instinct Hackathon.*
 
 ---
 
