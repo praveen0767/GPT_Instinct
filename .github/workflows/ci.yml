@@ -27,6 +27,7 @@ jobs:
           pip install --upgrade pip
           pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
           pip install -r requirements.txt
+          pip install pytest httpx requests
 
       - name: Run unit tests
         run: pytest tests/ -v --tb=short -x
